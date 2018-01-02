@@ -118,9 +118,9 @@ function Area( gfx )
 		}
 	}
 	
-	this.Update = function( kbd,ms )
+	this.Update = function( kbd,ms,miningActivity )
 	{
-		rockManager.Update( kbd,ms );
+		rockManager.Update( kbd,ms,miningActivity );
 	}
 	
 	this.Draw = function( gfx )

@@ -23,6 +23,23 @@ function Mouse()
 			pos.x = e.clientX - rect.left - root.scrollLeft;
 			pos.y = e.clientY - rect.top - root.scrollTop;
 		} );
+		
+		canvas.addEventListener( "touchmove",function( e )
+		{
+			e.preventDefault();
+			pos.x = e.changedTouches[0].clientX;
+			pos.y = e.changedTouches[0].clientY;
+		} );
+		
+		canvas.addEventListener( "touchstart",function( e )
+		{
+			isDown = true;
+		} );
+		
+		canvas.addEventListener( "touchend",function( e )
+		{
+			isDown = false;
+		} );
 	}
 	
 	this.GetPos = function()

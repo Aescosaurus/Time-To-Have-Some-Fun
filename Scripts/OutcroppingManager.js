@@ -28,7 +28,7 @@ function OutcroppingManager( gfx )
 			let yesIsHighlighted = false;
 			let noIsHighlighted = false;
 			// 
-			this.Update = function( kbd,ms )
+			this.Update = function( kbd,ms,activity )
 			{
 				isHovering = ( new Rect( this.pos.x,this.pos.y,this.size.x,this.size.y ) ).Contains( ms.GetPos() );
 				overXButton = ( xButton.Contains( ms.GetPos() ) );
@@ -51,6 +51,15 @@ function OutcroppingManager( gfx )
 					if( canCloseMenu && ( !menuRect.Contains( ms.GetPos() ) || overXButton ) )
 					{
 						menuOpen = false;
+					}
+					
+					if( yesIsHighlighted )
+					{
+						activity.Open();
+					}
+					else if( noIsHighlighted )
+					{
+						// menuOpen = false;
 					}
 				}
 				
@@ -166,12 +175,13 @@ function OutcroppingManager( gfx )
 		this.pos = pos;
 		this.size = new Vec2( 50,50 );
 		const myId = id;
+		const mineImage = gfx.LoadImage( "Images/Outcroppings/Mine0.png" );
 		
 		const m = new Menu( this.pos,this.size,myId );
 		// 
-		this.Update = function( kbd,ms )
+		this.Update = function( kbd,ms,activity )
 		{
-			m.Update( kbd,ms );
+			m.Update( kbd,ms,activity );
 		}
 		
 		this.Draw = function( gfx )
@@ -184,7 +194,8 @@ function OutcroppingManager( gfx )
 			}
 			
 			// gfx.DrawRect( this.pos,this.size,"#222" );
-			gfx.DrawGrad( this.pos,this.size,[ "#000","#F00" ] );
+			// gfx.DrawGrad( this.pos,this.size,[ "#000","#F00" ] );
+			gfx.DrawImage( mineImage,this.pos );
 			
 			m.Draw( gfx );
 		}
@@ -218,12 +229,12 @@ function OutcroppingManager( gfx )
 	let outcroppings = [];
 	let nRocks = 0;
 	// 
-	this.Update = function( ms,player )
+	this.Update = function( kbd,ms,activity )
 	{
 		// for( let i = 0; i < outcroppings.length; ++i )
 		for( let i in outcroppings )
 		{
-			outcroppings[i].Update( ms,player );
+			outcroppings[i].Update( kbd,ms,activity );
 		}
 	}
 	
