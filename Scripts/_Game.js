@@ -6,12 +6,11 @@ const gfx = new Graphics();
 const kbd = new Keyboard();
 const ms = new Mouse();
 const sfx = new Audio();
-const timer = new Timer();
 
 const p = new Player( gfx );
 const m = new Menu( gfx );
 const a = new Area( gfx );
-const miningActivity = new GoMining();
+const miningActivity = new GoMining( gfx,p.GetResources() );
 
 window.onload = function()
 {
@@ -35,7 +34,6 @@ function Start()
 
 function Update()
 {
-	timer.Update();
 	// Update below.
 	miningActivity.Update( kbd,ms );
 	if( !miningActivity.IsOpen() )

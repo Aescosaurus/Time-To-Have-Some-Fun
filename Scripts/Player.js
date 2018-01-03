@@ -7,7 +7,7 @@ function Player( gfx )
 		this.damage = 0;
 		this.speed = 0;
 		// 
-		this.Verify = function()
+		this.Verify=()=>
 		{
 			this.level = Math.min( Math.max( this.level,0 ),255 );
 			this.defense = Math.min( Math.max( this.defense,0 ),255 );
@@ -15,11 +15,22 @@ function Player( gfx )
 			this.speed = Math.min( Math.max( this.speed,0 ),255 );
 		}
 	}
+	
+	function Resources()
+	{
+		this.rocks = 0;
+		// 
+		this.Verify = function()
+		{
+			this.rocks = Math.min( Math.max( this.rocks,0 ),255 );
+		}
+	}
 	// 
 	GameObject.call( this );
 	this.pos = new Vec2( gfx.ScreenWidth / 2,gfx.ScreenHeight / 2 );
 	
 	const sts = new Stats();
+	const res = new Resources();
 	
 	const timeToMove = 12;
 	let moveTimer = 0;
@@ -28,16 +39,18 @@ function Player( gfx )
 	let isHighlighted = false;
 	let canOpenMenu = false;
 	// 
-	this.Start = function( menu )
+	this.Start=( menu )=>
 	{
 		menu.UpdateStats( sts );
 		sts.defense = 10;
 		sts.damage = 1;
 		sts.speed = 15;
 		sts.Verify();
+		
+		menu.UpdateResources( res );
 	}
 	
-	this.Update = function( kbd,ms,area,menu )
+	this.Update=( kbd,ms,area,menu )=>
 	{
 		isHighlighting = ( new Rect( this.pos.x - this.size.x / 2,this.pos.y - this.size.y / 2,
 			this.size.x,this.size.y ).Contains( ms.GetPos() ) );
@@ -84,7 +97,7 @@ function Player( gfx )
 		}
 	}
 	
-	this.Draw = function( gfx )
+	this.Draw=( gfx )=>
 	{
 		// gfx.DrawRect( this.pos.GetSubtracted( this.size.GetDivided( 2 ) ),this.size,"#0FF" );
 		if( isHighlighting )
@@ -96,7 +109,7 @@ function Player( gfx )
 		gfx.DrawGrad( this.pos.GetSubtracted( this.size.GetDivided( 2 ) ),this.size,[ "#07F","#0FF" ] );
 	}
 	
-	this.Move = function( amount,area,menu )
+	this.Move=( amount,area,menu )=>
 	{
 		moveTimer = 0;
 		if( this.pos.x < gfx.ScreenWidth / 2 && amount.x > 0 )
@@ -122,5 +135,10 @@ function Player( gfx )
 		
 		// menu.Close();
 		area.CloseMenus();
+	}
+	
+	this.GetResources=()=>
+	{
+		return res;
 	}
 }

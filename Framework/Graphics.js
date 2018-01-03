@@ -9,17 +9,22 @@ function Graphics()
 	this.ScreenHeight = canv.height;
 	this.ScreenRect = new Rect( 0,0,canv.width,canv.height );
 	// 
-	this.GetCanvas = function()
+	this.GetCanvas=()=>
 	{
 		return canv;
 	}
 	
-	this.GetContext = function()
+	this.GetContext=()=>
 	{
 		return ctx;
 	}
 	
-	this.LoadImage = function( url )
+	this.SetAlpha=( alpha )=>
+	{
+		ctx.globalAlpha = alpha;
+	}
+	
+	this.LoadImage=( url )=>
 	{
 		for( let i = 0; i < images.length; ++i )
 		{
@@ -37,7 +42,7 @@ function Graphics()
 		return( images.length - 1 );
 	}
 	
-	this.DrawImage = function( index,pos = new Vec2( 0,0 ),size = new Vec2( 0,0 ) )
+	this.DrawImage=( index,pos = new Vec2( 0,0 ),size = new Vec2( 0,0 ) )=>
 	{
 		if( size.x != 0 && size.y != 0 )
 		{
@@ -49,13 +54,13 @@ function Graphics()
 		}
 	}
 	
-	this.DrawRect = function( pos,size,c )
+	this.DrawRect=( pos,size,c )=>
 	{
 		ctx.fillStyle = c;
 		ctx.fillRect( pos.x,pos.y,size.x,size.y );
 	}
 	
-	this.DrawCircle = function( pos,radius,c )
+	this.DrawCircle=( pos,radius,c )=>
 	{
 		ctx.fillStyle = c;
 		
@@ -64,7 +69,7 @@ function Graphics()
 		ctx.fill();
 	}
 	
-	this.DrawGrad = function( pos,size,colors )
+	this.DrawGrad=( pos,size,colors )=>
 	{
 		let grad = ctx.createLinearGradient( pos.x,pos.y,pos.x + size.x,pos.y + size.y );
 		
@@ -80,7 +85,7 @@ function Graphics()
 		ctx.fillRect( pos.x,pos.y,size.x,size.y );
 	}
 	
-	this.DrawText = function( pos,font,color,msg )
+	this.DrawText=( pos,font,color,msg )=>
 	{
 		ctx.fillStyle = color;
 		ctx.font = font;

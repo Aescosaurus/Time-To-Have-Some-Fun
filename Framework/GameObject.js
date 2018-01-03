@@ -4,45 +4,45 @@ function GameObject()
 	this.size = new Vec2( 50,50 );
 	this.hitbox = new Rect( 0,0,0,0 );
 	// 
-	this.Draw = function( gfx )
+	this.Draw=( gfx )=>
 	{
 		gfx.DrawRect( this.pos,this.size,"#F00" );
 	}
 	
-	this.MoveTo = function( newPos )
+	this.MoveTo=( newPos )=>
 	{
 		this.pos = newPos;
 	}
 	
-	this.MoveBy = function( amount )
+	this.MoveBy=( amount )=>
 	{
 		this.pos += amount;
 	}
 	
-	this.SetSize = function( newSize )
+	this.SetSize=( newSize )=>
 	{
 		this.size = newSize;
 		this.hitbox.width = newSize.x;
 		this.hitbox.height = newSize.y;
 	}
 	
-	this.GetPos = function()
+	this.GetPos=()=>
 	{
 		return this.pos;
 	}
 	
-	this.GetSize = function()
+	this.GetSize=()=>
 	{
 		return this.size;
 	}
 	
-	this.GetRect = function()
+	this.GetRect=()=>
 	{
 		this.hitbox.MoveTo( this.pos );
 		return this.hitbox;
 	}
 	
-	this.Expose = function()
+	this.Expose=()=>
 	{
 		console.log( "-----------" );
 		console.log( "GAME OBJECT" );
