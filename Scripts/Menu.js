@@ -1,14 +1,17 @@
 function Menu( gfx )
 { // This only handles the players' menu...
 	GameObject.call( this );
-	this.pos = new Vec2( gfx.ScreenWidth * ( 0.20 / 2 ),gfx.ScreenHeight * ( 0.20 / 2 ) );
+	this.pos = new Vec2( gfx.ScreenWidth * ( 0.20 / 2 ),
+		gfx.ScreenHeight * ( 0.20 / 2 ) );
 	this.size = new Vec2( gfx.ScreenWidth * 0.80,gfx.ScreenHeight * 0.80 );
 	
 	let open = false;
 	let lastKey = '\0';
 	
-	let pStats; // Use let not const here so I can set the reference in UpdateStats().
+	let pStats; // Use let not const so I can set the reference in UpdateStats().
 	let pResources;
+	let pItem1;
+	let pItem2;
 	
 	const xButton = new Rect( this.pos.x + this.size.x - 40,this.pos.y,40,40 );
 	let overXButton = false;
@@ -18,6 +21,8 @@ function Menu( gfx )
 	let obscureRight = false;
 	
 	// Images
+	const xButtonOut = gfx.LoadImage( "Images/MenuItems/XButton0.png" );
+	const xButtonOver = gfx.LoadImage( "Images/MenuItems/XButton1.png" );
 	const rock = gfx.LoadImage( "Images/MenuItems/Rock.png" );
 	// 
 	this.Update=( kbd,ms,player )=>
@@ -91,33 +96,63 @@ function Menu( gfx )
 			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,35 ) ),
 				"30PX Lucida Console","#FFF","LVL: " + pStats.level );
 			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,70 ) ),
-				"30PX Lucida Console","#888","DEF: " + pStats.defense );
+				"30PX Lucida Console","#AE0","EXP: " + pStats.experience );
 			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,105 ) ),
-				"30PX Lucida Console","#E21","DMG: " + pStats.damage );
+				"30PX Lucida Console","#888","DEF: " +
+				( pStats.defense + pItem1.defense + pItem2.defense ) );
 			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,140 ) ),
-				"30PX Lucida Console","#1E2","SPD: " + pStats.speed );
+				"30PX Lucida Console","#E21","DMG: " +
+				( pStats.damage + pItem1.damage + pItem2.damage ) );
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,175 ) ),
+				"30PX Lucida Console","#1E2","SPD: " +
+				( pStats.speed + pItem1.speed + pItem2.speed ) );
 			
 			// Center dividing line.
 			gfx.DrawRect( this.pos.GetAdded( new Vec2( 165,7 ) ),
 				new Vec2( 5,this.size.y - 14 ),"#FFF" );
 			
-			// gfx.DrawRect( this.pos.GetAdded( new Vec2( 175,12 ) ),
-			// 	new Vec2( 25,25 ),"#333" );
-			gfx.DrawImage( rock,this.pos.GetAdded( new Vec2( 175,12 ) ) );
-			gfx.DrawText( this.pos.GetAdded( new Vec2( 205,35 ) ),
-				"30PX Lucida Console","#FFF",pResources.rocks );
+			{
+				gfx.DrawImage( rock,this.pos.GetAdded( new Vec2( 175,12 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 205,35 ) ),
+					"30PX Lucida Console","#FFF",pResources.rocks );
+			}
 			
 			{
-				// const bSize = new Vec2( 40,40 );
-				// gfx.DrawRect( new Vec2( this.pos.x + this.size.x - bSize.x,this.pos.y ),bSize,"#FFF" );
-				let color = "#FFF";
+				// Item 1.
+				gfx.DrawImage( pItem1.sprite,
+					this.pos.GetAdded( new Vec2( 5,190 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,210 ) ),
+					"20PX Lucida Console","#FFF",pItem1.name );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,240 ) ),
+					"20PX Lucida Console","#888",pItem1.defense );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,240 ) ),
+					"20PX Lucida Console","#E21",pItem1.damage );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,240 ) ),
+					"20PX Lucida Console","#1E2",pItem1.speed );
+				// Item 2.
+				gfx.DrawImage( pItem2.sprite,
+					this.pos.GetAdded( new Vec2( 5,250 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,270 ) ),
+					"20PX Lucida Console","#FFF",pItem2.name );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,300 ) ),
+					"20PX Lucida Console","#888",pItem2.defense );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,300 ) ),
+					"20PX Lucida Console","#E21",pItem2.damage );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,300 ) ),
+					"20PX Lucida Console","#1E2",pItem2.speed );
+			}
+			
+			{
+				let drawButton;
 				if( overXButton )
 				{
-					color = "#F00";
+					drawButton = xButtonOver;
 				}
-				// gfx.DrawRect( new Vec2( xButton.x,xButton.y ),new Vec2( xButton.width,xButton.height ),color );
-				gfx.DrawCircle( new Vec2( xButton.x + xButton.width / 2,xButton.y + xButton.width / 2 ),
-					xButton.width / 2.5,color );
+				else
+				{
+					drawButton = xButtonOut;
+				}
+				gfx.DrawImage( drawButton,new Vec2( xButton.x,xButton.y ) );
 			}
 		}
 	}
@@ -130,6 +165,16 @@ function Menu( gfx )
 	this.UpdateResources=( playerResources )=>
 	{
 		pResources = playerResources;
+	}
+	
+	this.UpdateItem1=( playerItem1 )=>
+	{
+		pItem1 = playerItem1;
+	}
+	
+	this.UpdateItem2=( playerItem2 )=>
+	{
+		pItem2 = playerItem2;
 	}
 	
 	this.Open=()=>

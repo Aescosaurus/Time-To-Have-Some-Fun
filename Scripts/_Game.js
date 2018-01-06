@@ -7,10 +7,11 @@ const kbd = new Keyboard();
 const ms = new Mouse();
 const sfx = new Audio();
 
+const equips = new EquipmentItems();
 const p = new Player( gfx );
 const m = new Menu( gfx );
-const a = new Area( gfx );
-const miningActivity = new GoMining( gfx,p.GetResources() );
+const a = new Area( gfx,equips );
+const miningActivity = new GoMining( gfx,p.GetStats(),p.GetResources() );
 
 window.onload = function()
 {
@@ -28,7 +29,8 @@ function Start()
 	kbd.Start();
 	ms.Start( gfx.GetCanvas() );
 	// Initialize below!
-	p.Start( m );
+	equips.GenerateItems( gfx );
+	p.Start( m,equips );
 	a.Start();
 }
 
@@ -40,7 +42,7 @@ function Update()
 	{
 		p.Update( kbd,ms,a,m );
 		m.Update( kbd,ms,p );
-		a.Update( kbd,ms,miningActivity );
+		a.Update( kbd,ms,p,miningActivity );
 	}
 }
 

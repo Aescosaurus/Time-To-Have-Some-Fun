@@ -1,11 +1,26 @@
 function Random(){}
-	Random.RangeI = function( min,max )
+	Random.RangeI=( min,max )=>
 	{
 		return( Math.floor( Math.random() * ( 1 + max - min ) ) + min );
 	}
 	
-	Random.RangeF = function( min,max )
+	Random.RangeF=( min,max )=>
 	{
 		return( ( Math.random() * ( max - min ) ) + min );
 	}
 	
+	Random.DeviateI=( amount,maxDeviation )=>
+	{
+		return( amount + Random.RangeI( -maxDeviation,maxDeviation ) );
+	}
+	
+	Random.DeviateF=( amount,maxDeviation )=>
+	{
+		return( amount + Random.RangeF( -maxDeviation,maxDeviation ) );
+	}
+
+function Str(){}
+	Str.FirstUpperCase=( str )=>
+	{
+		return( str.charAt( 0 ).toUpperCase() + str.slice( 1 ) );
+	}

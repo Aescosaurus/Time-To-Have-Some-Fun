@@ -1,14 +1,16 @@
 // TODO: Make ALL OF THIS less GROSS.
 
-function GoMining( gfx,playerResources )
+function GoMining( gfx,playerStats,playerResources )
 {
 	function Score( scoreMsg,active = true )
 	{
 		let pos = new Vec2( gfx.ScreenWidth / 2,gfx.ScreenHeight / 2 );
 		const opacityLossRate = 0.02;
 		let opacity = 1.0;
+		
+		const expGain = Random.RangeI( 3,5 );
 		// 
-		this.Update = () =>
+		this.Update=()=>
 		{
 			if( active )
 			{
@@ -24,7 +26,10 @@ function GoMining( gfx,playerResources )
 			if( active )
 			{
 				gfx.SetAlpha( opacity );
-				gfx.DrawText( pos,"50PX Lucida Console","#EE5",scoreMsg );
+				gfx.DrawText( new Vec2( gfx.ScreenWidth / 8,gfx.ScreenHeight / 2 ),
+					"50PX Lucida Console","#EE5","Ore Harvested: " + scoreMsg );
+				gfx.DrawText( new Vec2( gfx.ScreenWidth / 4,gfx.ScreenHeight / 1.7 ),
+					"40PX Lucida Console","#EE5","EXP Gained: " + expGain );
 				gfx.SetAlpha( 1.0 );
 			}
 		}
@@ -33,19 +38,28 @@ function GoMining( gfx,playerResources )
 		{
 			return( opacity <= opacityLossRate );
 		}
+		
+		this.GetScore=()=>
+		{
+			return expGain;
+		}
 	}
 	// 
 	const Finish=()=>
 	{
 		finished = true;
 		hasFailed = true;
+		canClick = false;
 		let msg = Math.ceil( power / ( ( frames.length - 1 ) / 2 ) + 0.1 );
 		if( msg == 3 )
 		{
 			msg *= 2;
 		}
 		s = new Score( msg );
+		pStats.experience += s.GetScore();
 		pResources.rocks += msg;
+		pStats.Verify();
+		pResources.Verify();
 	}
 	// 
 	let isOpen = false;
@@ -57,9 +71,12 @@ function GoMining( gfx,playerResources )
 	let canFinish = false;
 	let finished = false;
 	
+	let canClick = false;
+	
 	const powerAdd = 1;
 	let power = 0;
 	
+	const pStats = playerStats;
 	const pResources = playerResources;
 	
 	let s = new Score( "",false );
@@ -85,8 +102,9 @@ function GoMining( gfx,playerResources )
 			
 			if( !failed )
 			{
-				if( kbd.KeyDown( ' ' ) && !finished )
+				if( ( kbd.KeyDown( ' ' ) || ( ms.IsDown() && canClick ) ) && !finished )
 				{
+					canUnclick = false;
 					power = 0;
 					progress += progressAdd;
 					canFinish = true;
@@ -114,6 +132,11 @@ function GoMining( gfx,playerResources )
 				if( progress >= frames.length - 1 )
 				{
 					failed = true;
+				}
+				
+				if( !ms.IsDown() && !finished )
+				{
+					canClick = true;
 				}
 			}
 			else if( !hasFailed )

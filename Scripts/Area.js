@@ -1,4 +1,4 @@
-function Area( gfx )
+function Area( gfx,equips )
 {
 	function Tile()
 	{
@@ -82,6 +82,7 @@ function Area( gfx )
 	
 	let tiles = [];
 	let rockManager = new OutcroppingManager( gfx );
+	let tradesManager = new TraderManager( gfx,equips );
 	
 	let drawOffset = new Vec2( 27,27 ); // I measured this by hand...
 	// Oh /\ /\ /\ is where the player starts btw,
@@ -113,20 +114,55 @@ function Area( gfx )
 				}
 				
 				// Maybe this can use map specified values later?
-				if( Random.RangeI( 0,100 ) > 99 )
+				if( Random.RangeI( 0,1000 ) > 990 )
 				{
 					// rocks.push( new Outcropping( new Vec2( x,y ) ) );
 					rockManager.Add( new Vec2( x,y )
 						.GetSubtracted( size.GetDivided( 2.0 ) )
 						.GetMultiplied( tileSize ) );
 				}
+				else if( Random.RangeI( 0,1000 ) > 995 )
+				{
+					tradesManager.Add( new Vec2( x,y )
+						.GetSubtracted( size.GetDivided( 2.0 ) )
+						.GetMultiplied( tileSize ) );
+				}
 			}
 		}
+		
+		tradesManager.Start();
 	}
 	
-	this.Update=( kbd,ms,miningActivity )=>
+	this.Update=( kbd,ms,player,miningActivity )=>
 	{
-		rockManager.Update( kbd,ms,miningActivity );
+		const selectRect = player.GetSelectRect();
+		// console.log( tradesManager.HasSelectedTrader() );
+		rockManager.Update( kbd,ms,selectRect,miningActivity,
+			( !tradesManager.HasSelectedTrader() ) );
+		tradesManager.Update( kbd,ms,selectRect,
+			( !rockManager.HasSelectedRock() ),
+			player.GetResources() );
+		
+		// if( tradesManager.GetTakenDeal().HasBought() )
+		// {
+		// 	player.ReplaceItem( 1,tradesManager.GetTakenDeal() );
+		// 	
+		// 	// tradesManager.DeleteActiveDeal();
+		// }
+		
+		if( tradesManager.HasActiveDeal() )
+		{
+			player.ReplaceItem( 12345,tradesManager.GetActiveDeal().GetReward() );
+		}
+		
+		// if( rockManager.HasSelectedRock() )
+		// {
+		// 	tradesManager.CloseMenu();
+		// }
+		// else if( tradesManager.HasSelectedTrader() )
+		// {
+		// 	rockManager.CloseMenu();
+		// }
 	}
 	
 	this.Draw=( gfx )=>
@@ -153,7 +189,16 @@ function Area( gfx )
 			}
 		}
 		
-		rockManager.Draw( gfx );
+		if( rockManager.HasSelectedRock() )
+		{
+			tradesManager.Draw( gfx );
+			rockManager.Draw( gfx );
+		}
+		else
+		{
+			rockManager.Draw( gfx );
+			tradesManager.Draw( gfx );
+		}
 	}
 	
 	this.Move=( amount )=>
@@ -195,6 +240,7 @@ function Area( gfx )
 		// 	rocks[i].Move( delta );
 		// }
 		rockManager.MoveAll( amount.GetMultiplied( -1 ).GetAdded( delta ) );
+		tradesManager.MoveAll( amount.GetMultiplied( -1 ).GetAdded( delta ) );
 		
 		return pushbackAmount;
 	}
@@ -202,6 +248,7 @@ function Area( gfx )
 	this.CloseMenus=()=>
 	{
 		rockManager.CloseMenu();
+		tradesManager.CloseMenu();
 	}
 	
 	this.GetTile=( posXY )=>
@@ -215,5 +262,10 @@ function Area( gfx )
 		// 	return tiles[0];
 		// }
 		return tiles[posXY.y * size.x + posXY.x];
+	}
+	
+	this.PlaceIsBlocked=( blockedPos )=>
+	{
+		return( rockManager.IsBlocked( blockedPos ) );
 	}
 }

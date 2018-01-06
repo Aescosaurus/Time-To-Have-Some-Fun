@@ -25,13 +25,19 @@ function Rect( x,y,w,h )
 	
 	this.MoveBy=( amount )=>
 	{
-		this.x += amount;
-		this.y += amount;
+		this.x += amount.x;
+		this.y += amount.y;
 	}
 	
 	this.MoveTo=( pos )=>
 	{
 		this.x = pos.x;
 		this.y = pos.y;
+	}
+	
+	this.GetMovedBy=( amount )=>
+	{
+		return( new Rect( this.x + amount.x,this.y + amount.y,
+			this.width,this.height ) );
 	}
 }
