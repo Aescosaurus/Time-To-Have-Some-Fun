@@ -18,7 +18,11 @@ function Random(){}
 	{
 		return( amount + Random.RangeF( -maxDeviation,maxDeviation ) );
 	}
-
+	
+	Random.Chance=( percentChance )=>
+	{
+		return( Random.RangeF( 0,100 ) < percentChance );
+	}
 function Str(){}
 	Str.FirstUpperCase=( str )=>
 	{

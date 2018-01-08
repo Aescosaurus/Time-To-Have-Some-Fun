@@ -2,6 +2,11 @@
 
 function GoMining( gfx,playerStats,playerResources )
 {
+	function Rating( score )
+	{
+		
+	}
+	
 	function Score( scoreMsg,active = true )
 	{
 		let pos = new Vec2( gfx.ScreenWidth / 2,gfx.ScreenHeight / 2 );

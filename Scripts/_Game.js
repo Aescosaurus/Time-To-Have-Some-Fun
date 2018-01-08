@@ -12,6 +12,7 @@ const p = new Player( gfx );
 const m = new Menu( gfx );
 const a = new Area( gfx,equips );
 const miningActivity = new GoMining( gfx,p.GetStats(),p.GetResources() );
+const harvestGrassActivity = new GoHarvestGrass( gfx,p.GetStats(),p.GetResources() );
 
 window.onload = function()
 {
@@ -29,7 +30,7 @@ function Start()
 	kbd.Start();
 	ms.Start( gfx.GetCanvas() );
 	// Initialize below!
-	equips.GenerateItems( gfx );
+	equips.GenerateItems( gfx,p.GetResources() );
 	p.Start( m,equips );
 	a.Start();
 }
@@ -38,11 +39,12 @@ function Update()
 {
 	// Update below.
 	miningActivity.Update( kbd,ms );
-	if( !miningActivity.IsOpen() )
+	harvestGrassActivity.Update( kbd,ms );
+	if( !miningActivity.IsOpen() && !harvestGrassActivity.IsOpen() )
 	{
 		p.Update( kbd,ms,a,m );
 		m.Update( kbd,ms,p );
-		a.Update( kbd,ms,p,miningActivity );
+		a.Update( kbd,ms,p,miningActivity,harvestGrassActivity );
 	}
 }
 
@@ -51,7 +53,8 @@ function Draw()
 	gfx.DrawRect( new Vec2( 0,0 ),new Vec2( gfx.ScreenWidth,gfx.ScreenHeight ),"#000" );
 	// Draw below.
 	miningActivity.Draw( gfx );
-	if( !miningActivity.IsOpen() )
+	harvestGrassActivity.Draw( gfx );
+	if( !miningActivity.IsOpen() && !harvestGrassActivity.IsOpen() )
 	{
 		a.Draw( gfx );
 		p.Draw( gfx );

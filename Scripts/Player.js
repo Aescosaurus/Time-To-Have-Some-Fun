@@ -26,27 +26,24 @@ function Player( gfx )
 	function Resources()
 	{
 		this.rocks = 0;
+		this.grass = 0;
 		// 
 		this.Verify = function()
 		{
 			this.rocks = Math.min( Math.max( this.rocks,0 ),255 );
+			this.grass = Math.min( Math.max( this.grass,0 ),255 );
 		}
 		
 		this.GetResource=( strName )=>
 		{
-			// for( let res in this )
-			// {
-			// 	if( strName == res )
-			// 	{
-			// 		return res;
-			// 	}
-			// }
-			// 
-			// return "NULL";
 			// TODO: Find a better way to do this before adding more.
 			if( strName == "rocks" )
 			{
 				return this.rocks;
+			}
+			else if( strName == "grass" )
+			{
+				return this.grass;
 			}
 		}
 		
@@ -55,6 +52,10 @@ function Player( gfx )
 			if( strName == "rocks" )
 			{
 				this.rocks -= amount;
+			}
+			else if( strName == "grass" )
+			{
+				this.grass -= amount;
 			}
 			
 			this.Verify();
@@ -84,9 +85,9 @@ function Player( gfx )
 	this.Start=( menu,equips )=>
 	{
 		menu.UpdateStats( sts );
-		sts.defense = 10;
+		sts.defense = 1;
 		sts.damage = 1;
-		sts.speed = 15;
+		sts.speed = 1;
 		sts.Verify();
 		
 		menu.UpdateResources( res );

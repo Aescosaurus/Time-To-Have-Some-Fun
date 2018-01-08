@@ -107,7 +107,7 @@ function TraderManager( gfx,equips )
 					}
 					gfx.DrawGrad( new Vec2( menuRect.x,menuRect.y ),
 						new Vec2( menuRect.width,menuRect.height ),
-						[ "#0EE","#2AC","#47F" ] );
+						[ "#0EE","#4CC" ] );
 					
 					let drawButton;
 					if( overXButton )
@@ -174,17 +174,23 @@ function TraderManager( gfx,equips )
 			let amIHidden = false;
 			
 			const rocks = gfx.LoadImage( "Images/MenuItems/Rock.png" );
+			const grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
 			// 
-			this.Update=( kbd,ms,selectRect,pResources )=>
+			this.Update=( kbd,ms,selectRect,pResources,menuIsOpen )=>
 			{
 				if( !amIHidden )
 				{
 					highlighted = ( myRect.Overlaps( selectRect ) ||
 						myRect.Contains( ms.GetPos() ) );
 					
-					if( !ms.IsDown() && highlighted )
+					if( !ms.IsDown() && highlighted && menuIsOpen )
 					{
 						canBuy = true;
+					}
+					
+					if( !menuIsOpen || !highlighted )
+					{
+						canBuy = false;
 					}
 					
 					if( ms.IsDown() && canBuy && highlighted )
@@ -224,7 +230,10 @@ function TraderManager( gfx,equips )
 							highlightColor );
 					}
 					
-					gfx.DrawRect( this.pos,this.size,"#AF0" );
+					// gfx.DrawRect( this.pos,this.size,"#29E" );
+					// gfx.DrawGrad( this.pos,this.size,
+					// 	[ "#0CC","#2AB" ] );
+					gfx.DrawRect( this.pos,this.size,"#5BD" );
 					
 					gfx.DrawImage( reward.sprite,this.pos.GetAdded( new Vec2( 5,5 ) ) );
 					gfx.DrawText( this.pos.GetAdded( new Vec2( 35,25 ) ),
@@ -235,6 +244,16 @@ function TraderManager( gfx,equips )
 						this.pos.GetAdded( new Vec2( 5,5 + 40 ) ) );
 					gfx.DrawText( this.pos.GetAdded( new Vec2( 40,30 + 40 ) ),
 						"30PX Lucida Console","#FFF",amount );
+					
+					gfx.DrawText( this.pos.GetAdded( new Vec2( 10,100 ) ),
+						"20PX Lucida Console","#888",
+						reward.defense );
+					gfx.DrawText( this.pos.GetAdded( new Vec2( 75,100 ) ),
+						"20PX Lucida Console","#E21",
+						reward.damage );
+					gfx.DrawText( this.pos.GetAdded( new Vec2( 140,100 ) ),
+						"20PX Lucida Console","#1E2",
+						reward.speed );
 				}
 			}
 			
@@ -277,17 +296,23 @@ function TraderManager( gfx,equips )
 		// 
 		this.Start=()=>
 		{
+			let itemName = equips.GetRandomItem().name;
 			deals.push( new Deal( m.GetPos().GetAdded( new Vec2( 10,46 ) ),
-				"rocks",Random.DeviateI( 35,10 ),
-				equips.GetItem( "Rock Boots" ) ) );
+				equips.GetItem( itemName ).resource,
+				Random.DeviateI( 35,10 ),
+				equips.GetItem( itemName ) ) );
 			
+			itemName = equips.GetRandomItem().name;
 			deals.push( new Deal( m.GetPos().GetAdded( new Vec2( 212,46 ) ),
-				"rocks",Random.DeviateI( 35,10 ),
-				equips.GetItem( "Rock Boots" ) ) );
+				equips.GetItem( itemName ).resource,
+				Random.DeviateI( 35,10 ),
+				equips.GetItem( itemName ) ) );
 			
+			itemName = equips.GetRandomItem().name;
 			deals.push( new Deal( m.GetPos().GetAdded( new Vec2( 415,46 ) ),
-				"rocks",Random.DeviateI( 35,10 ),
-				equips.GetItem( "Rock Boots" ) ) );
+				equips.GetItem( itemName ).resource,
+				Random.DeviateI( 35,10 ),
+				equips.GetItem( itemName ) ) );
 		}
 		
 		this.Update=( kbd,ms,selectRect,noMenusOpen,pResources )=>
@@ -306,7 +331,7 @@ function TraderManager( gfx,equips )
 			{
 				for( let i in deals )
 				{
-					deals[i].Update( kbd,ms,selectRect,pResources );
+					deals[i].Update( kbd,ms,selectRect,pResources,m.IsOpen() );
 					
 					if( deals[i].HasBought() )
 					{

@@ -45,9 +45,10 @@ function Area( gfx,equips )
 			}
 			
 			if( Random.RangeI( 0,100 ) > 95 )
-			{
+			{ // I think this is supposed to be optimized.
+				const nSamples = 5;
 				let flora = [];
-				for( let i = 0; i < 2; ++i )
+				for( let i = 0; i < nSamples; ++i )
 				{
 					flora.push( "Images/Flora/Flora" + i + ".png" );
 				}
@@ -83,6 +84,7 @@ function Area( gfx,equips )
 	let tiles = [];
 	let rockManager = new OutcroppingManager( gfx );
 	let tradesManager = new TraderManager( gfx,equips );
+	let fieldsManager = new FieldManager( gfx );
 	
 	let drawOffset = new Vec2( 27,27 ); // I measured this by hand...
 	// Oh /\ /\ /\ is where the player starts btw,
@@ -114,18 +116,21 @@ function Area( gfx,equips )
 				}
 				
 				// Maybe this can use map specified values later?
-				if( Random.RangeI( 0,1000 ) > 990 )
+				const addPos = new Vec2( x,y )
+					.GetSubtracted( size.GetDivided( 2.0 ) )
+					.GetMultiplied( tileSize )
+				if( Random.Chance( 1 ) )
 				{
 					// rocks.push( new Outcropping( new Vec2( x,y ) ) );
-					rockManager.Add( new Vec2( x,y )
-						.GetSubtracted( size.GetDivided( 2.0 ) )
-						.GetMultiplied( tileSize ) );
+					rockManager.Add( addPos );
 				}
-				else if( Random.RangeI( 0,1000 ) > 995 )
+				else if( Random.Chance( 0.5 ) )
 				{
-					tradesManager.Add( new Vec2( x,y )
-						.GetSubtracted( size.GetDivided( 2.0 ) )
-						.GetMultiplied( tileSize ) );
+					tradesManager.Add( addPos );
+				}
+				else if( Random.Chance( 1 ) )
+				{
+					fieldsManager.Add( addPos );
 				}
 			}
 		}
@@ -133,36 +138,27 @@ function Area( gfx,equips )
 		tradesManager.Start();
 	}
 	
-	this.Update=( kbd,ms,player,miningActivity )=>
+	this.Update=( kbd,ms,player,miningActivity,harvestGrassActivity )=>
 	{
 		const selectRect = player.GetSelectRect();
 		// console.log( tradesManager.HasSelectedTrader() );
 		rockManager.Update( kbd,ms,selectRect,miningActivity,
-			( !tradesManager.HasSelectedTrader() ) );
+			( !tradesManager.HasSelectedTrader() &&
+			!fieldsManager.HasSelectedField() ) );
+		
 		tradesManager.Update( kbd,ms,selectRect,
-			( !rockManager.HasSelectedRock() ),
+			( !rockManager.HasSelectedRock() &&
+			!fieldsManager.HasSelectedField() ),
 			player.GetResources() );
 		
-		// if( tradesManager.GetTakenDeal().HasBought() )
-		// {
-		// 	player.ReplaceItem( 1,tradesManager.GetTakenDeal() );
-		// 	
-		// 	// tradesManager.DeleteActiveDeal();
-		// }
+		fieldsManager.Update( kbd,ms,selectRect,harvestGrassActivity,
+			( !rockManager.HasSelectedRock() &&
+			!tradesManager.HasSelectedTrader() ) );
 		
 		if( tradesManager.HasActiveDeal() )
 		{
 			player.ReplaceItem( 12345,tradesManager.GetActiveDeal().GetReward() );
 		}
-		
-		// if( rockManager.HasSelectedRock() )
-		// {
-		// 	tradesManager.CloseMenu();
-		// }
-		// else if( tradesManager.HasSelectedTrader() )
-		// {
-		// 	rockManager.CloseMenu();
-		// }
 	}
 	
 	this.Draw=( gfx )=>
@@ -189,15 +185,30 @@ function Area( gfx,equips )
 			}
 		}
 		
+		// TODO: Come back to this later.
 		if( rockManager.HasSelectedRock() )
+		{
+			fieldsManager.Draw( gfx );
+			tradesManager.Draw( gfx );
+			rockManager.Draw( gfx );
+		}
+		else if( tradesManager.HasSelectedTrader() )
+		{
+			rockManager.Draw( gfx );
+			fieldsManager.Draw( gfx );
+			tradesManager.Draw( gfx );
+		}
+		else if( fieldsManager.HasSelectedField() )
 		{
 			tradesManager.Draw( gfx );
 			rockManager.Draw( gfx );
+			fieldsManager.Draw( gfx );
 		}
 		else
 		{
 			rockManager.Draw( gfx );
 			tradesManager.Draw( gfx );
+			fieldsManager.Draw( gfx );
 		}
 	}
 	
@@ -239,8 +250,10 @@ function Area( gfx,equips )
 		// 	rocks[i].Move( amount.GetMultiplied( -1 ) );
 		// 	rocks[i].Move( delta );
 		// }
-		rockManager.MoveAll( amount.GetMultiplied( -1 ).GetAdded( delta ) );
-		tradesManager.MoveAll( amount.GetMultiplied( -1 ).GetAdded( delta ) );
+		const moveAmount = amount.GetMultiplied( -1 ).GetAdded( delta );
+		rockManager.MoveAll( moveAmount );
+		tradesManager.MoveAll( moveAmount );
+		fieldsManager.MoveAll( moveAmount );
 		
 		return pushbackAmount;
 	}
@@ -249,6 +262,7 @@ function Area( gfx,equips )
 	{
 		rockManager.CloseMenu();
 		tradesManager.CloseMenu();
+		fieldsManager.CloseMenu();
 	}
 	
 	this.GetTile=( posXY )=>

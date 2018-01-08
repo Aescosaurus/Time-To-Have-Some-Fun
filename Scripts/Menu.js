@@ -23,7 +23,9 @@ function Menu( gfx )
 	// Images
 	const xButtonOut = gfx.LoadImage( "Images/MenuItems/XButton0.png" );
 	const xButtonOver = gfx.LoadImage( "Images/MenuItems/XButton1.png" );
+	
 	const rock = gfx.LoadImage( "Images/MenuItems/Rock.png" );
+	const grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
 	// 
 	this.Update=( kbd,ms,player )=>
 	{
@@ -111,34 +113,44 @@ function Menu( gfx )
 			gfx.DrawRect( this.pos.GetAdded( new Vec2( 165,7 ) ),
 				new Vec2( 5,this.size.y - 14 ),"#FFF" );
 			
-			{
-				gfx.DrawImage( rock,this.pos.GetAdded( new Vec2( 175,12 ) ) );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 205,35 ) ),
+			{ // Right side resources.
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 175,35 ) ),
+					"35PX Lucida Console","#FFF","Items:" );
+					
+				gfx.DrawImage( rock,this.pos.GetAdded( new Vec2( 175,50 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 205,75 ) ),
 					"30PX Lucida Console","#FFF",pResources.rocks );
+				
+				gfx.DrawImage( grass,this.pos.GetAdded( new Vec2( 175,85 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 205,110 ) ),
+					"30PX Lucida Console","#FFF",pResources.grass );
 			}
+			
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 5,205 ) ),
+				"25PX Lucida Console","#FFF","Equipment:" );
 			
 			{
 				// Item 1.
 				gfx.DrawImage( pItem1.sprite,
-					this.pos.GetAdded( new Vec2( 5,190 ) ) );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,210 ) ),
+					this.pos.GetAdded( new Vec2( 5,215 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,235 ) ),
 					"20PX Lucida Console","#FFF",pItem1.name );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,240 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,265 ) ),
 					"20PX Lucida Console","#888",pItem1.defense );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,240 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,265 ) ),
 					"20PX Lucida Console","#E21",pItem1.damage );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,240 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,265 ) ),
 					"20PX Lucida Console","#1E2",pItem1.speed );
 				// Item 2.
 				gfx.DrawImage( pItem2.sprite,
-					this.pos.GetAdded( new Vec2( 5,250 ) ) );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,270 ) ),
+					this.pos.GetAdded( new Vec2( 5,275 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,295 ) ),
 					"20PX Lucida Console","#FFF",pItem2.name );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,300 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,325 ) ),
 					"20PX Lucida Console","#888",pItem2.defense );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,300 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,325 ) ),
 					"20PX Lucida Console","#E21",pItem2.damage );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,300 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,325 ) ),
 					"20PX Lucida Console","#1E2",pItem2.speed );
 			}
 			
