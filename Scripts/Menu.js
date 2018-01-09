@@ -1,5 +1,135 @@
+// This only handles the players' menu...
 function Menu( gfx )
-{ // This only handles the players' menu...
+{
+	function LevelUpBox( pos,id,pLvl )
+	{
+		function Preset( pLvl )
+		{
+			this.name = "BROKEN";
+			this.col = "#F0F";
+			
+			this.def = 0;
+			this.dmg = 0;
+			this.spd = 0;
+			
+			const max = 5;
+			const min = 2;
+			
+			this.Generate=( id )=>
+			{
+				// Make sure buff is always a round int.
+				const buff = Math.max( 1,Math.floor( pLvl / 2 ) );
+				if( id == 0 )
+				{
+					this.name = "Rogue";
+					this.col = "#E21";
+					
+					this.def = Random.RangeI( -max,-min ) * buff;
+					this.dmg = Random.RangeI( min,max ) * buff;
+					this.spd = Random.RangeI( min,max ) * buff;
+				}
+				else if( id == 1 )
+				{
+					this.name = "Knight";
+					this.col = "#888";
+					
+					this.def = Random.RangeI( min,max ) * buff;
+					this.dmg = Random.RangeI( min,max ) * buff;
+					this.spd = Random.RangeI( -max,-min ) * buff;
+				}
+				else
+				{
+					this.name = "Pacifist";
+					this.col = "#1E2";
+					
+					this.def = Random.RangeI( min,max ) * buff;
+					this.dmg = Random.RangeI( -max,-min ) * buff;
+					this.spd = Random.RangeI( min,max ) * buff;
+				}
+			}
+		}
+		// 
+		this.pos = pos;
+		this.size = new Vec2( 185,85 );
+		
+		let hovering = false;
+		
+		let canBuy = false;
+		let bought = false;
+		
+		let hasApplied = false;
+		
+		let preset = new Preset( pLvl );
+		// 
+		this.Start=()=>
+		{
+			preset.Generate( id );
+		}
+		
+		this.Update=( kbd,ms,menuIsOpen,pStats )=>
+		{
+			if( menuIsOpen )
+			{
+				hovering = ( new Rect( this.pos.x,this.pos.y,
+					this.size.x,this.size.y ) ).Contains( ms.GetPos() );
+				
+				if( pStats.levelUpPoints > 0 && hovering && !ms.IsDown() )
+				{
+					canBuy = true;
+				}
+				if( pStats.levelUpPoints < 0 || !hovering )
+				{
+					canBuy = false;
+				}
+				
+				if( canBuy && ms.IsDown() && hovering )
+				{
+					bought = true;
+				}
+				
+				if( bought && !hasApplied )
+				{
+					hasApplied = true;
+					--pStats.levelUpPoints;
+					pStats.defense += preset.def;
+					pStats.damage += preset.dmg;
+					pStats.speed += preset.spd;
+				}
+			}
+		}
+		
+		this.Draw=( gfx )=>
+		{
+			if( hovering )
+			{
+				gfx.DrawRect( this.pos.GetSubtracted( new Vec2( 5,5 ) ),
+					this.size.GetAdded( new Vec2( 10,10 ) ),"#FFF" );
+			}
+			
+			gfx.DrawRect( this.pos,this.size,"#E92" );
+			
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 5,25 ) ),
+				"20PX Lucida Console","#FFF",preset.name );
+			
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 5,50 ) ),
+				"20PX Lucida Console","#888",preset.def );
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 60,50 ) ),
+				"20PX Lucida Console","#E21",preset.dmg );
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 115,50 ) ),
+				"20PX Lucida Console","#1E2",preset.spd );
+		}
+		
+		this.IsBought=()=>
+		{
+			return bought;
+		}
+		
+		this.GetPreset=()=>
+		{
+			return preset;
+		}
+	}
+	// 
 	GameObject.call( this );
 	this.pos = new Vec2( gfx.ScreenWidth * ( 0.20 / 2 ),
 		gfx.ScreenHeight * ( 0.20 / 2 ) );
@@ -18,7 +148,10 @@ function Menu( gfx )
 	let canClose = false;
 	let overMenu = false;
 	
-	let obscureRight = false;
+	let obscuring = false;
+	let notObscured = -1;
+	
+	let luBoxes = [];
 	
 	// Images
 	const xButtonOut = gfx.LoadImage( "Images/MenuItems/XButton0.png" );
@@ -27,6 +160,23 @@ function Menu( gfx )
 	const rock = gfx.LoadImage( "Images/MenuItems/Rock.png" );
 	const grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
 	// 
+	this.Restart=()=>
+	{
+		luBoxes = [];
+		
+		luBoxes.push( new LevelUpBox( this.pos.GetAdded( new Vec2( 325,75 ) ),
+			0,pStats.level ) );
+		luBoxes.push( new LevelUpBox( this.pos.GetAdded( new Vec2( 325,170 ) ),
+			1,pStats.level ) );
+		luBoxes.push( new LevelUpBox( this.pos.GetAdded( new Vec2( 325,265 ) ),
+			2,pStats.level ) );
+		
+		for( let i in luBoxes )
+		{
+			luBoxes[i].Start();
+		}
+	}
+	
 	this.Update=( kbd,ms,player )=>
 	{
 		overMenu = ( new Rect( this.pos.x,this.pos.y,
@@ -58,13 +208,27 @@ function Menu( gfx )
 			canClose = true;
 		}
 		
-		if( ms.GetPos().x > this.pos.x + 165 )
+		if( ms.GetPos().x < this.pos.x + 165 )
 		{
-			obscuringRight = false;
+			notObscured = 1;
+		}
+		else if( ms.GetPos().x < this.pos.x + 310 )
+		{
+			notObscured = 2;
 		}
 		else
 		{
-			obscuringRight = true;
+			notObscured = 3;
+		}
+		
+		for( let i in luBoxes )
+		{
+			luBoxes[i].Update( kbd,ms,open,player.GetStats() );
+			
+			if( luBoxes[i].IsBought() )
+			{
+				this.Restart();
+			}
 		}
 	}
 	
@@ -83,14 +247,19 @@ function Menu( gfx )
 			if( overMenu )
 			{
 				gfx.SetAlpha( 0.1 );
-				if( obscuringRight )
+				if( notObscured == 1 )
 				{
 					gfx.DrawRect( this.pos,new Vec2( 170,this.size.y ),"#FFF" );
 				}
-				else
+				else if( notObscured == 2 )
 				{
 					gfx.DrawRect( this.pos.GetAdded( new Vec2( 165,0 ) ),
-						this.size.GetSubtracted( new Vec2( 165,0 ) ),"#FFF" );
+						new Vec2( 150,this.size.y ),"#FFF" );
+				}
+				else
+				{
+					gfx.DrawRect( this.pos.GetAdded( new Vec2( 310,0 ) ),
+						this.size.GetSubtracted( new Vec2( 310,0 ) ),"#FFF" );
 				}
 				gfx.SetAlpha( 1.0 );
 			}
@@ -99,18 +268,25 @@ function Menu( gfx )
 				"30PX Lucida Console","#FFF","LVL: " + pStats.level );
 			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,70 ) ),
 				"30PX Lucida Console","#AE0","EXP: " + pStats.experience );
-			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,105 ) ),
+			
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 5,95 ) ),
+				"15PX Lucida Console","#0FF","(" +
+				Math.min( 255,pStats.level * 2 ) + " to next LVL)" );
+			
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,130 ) ),
 				"30PX Lucida Console","#888","DEF: " +
 				( pStats.defense + pItem1.defense + pItem2.defense ) );
-			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,140 ) ),
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,165 ) ),
 				"30PX Lucida Console","#E21","DMG: " +
 				( pStats.damage + pItem1.damage + pItem2.damage ) );
-			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,175 ) ),
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 10,200 ) ),
 				"30PX Lucida Console","#1E2","SPD: " +
 				( pStats.speed + pItem1.speed + pItem2.speed ) );
 			
-			// Center dividing line.
+			// Dividing lines.
 			gfx.DrawRect( this.pos.GetAdded( new Vec2( 165,7 ) ),
+				new Vec2( 5,this.size.y - 14 ),"#FFF" );
+			gfx.DrawRect( this.pos.GetAdded( new Vec2( 310,7 ) ),
 				new Vec2( 5,this.size.y - 14 ),"#FFF" );
 			
 			{ // Right side resources.
@@ -126,32 +302,52 @@ function Menu( gfx )
 					"30PX Lucida Console","#FFF",pResources.grass );
 			}
 			
-			gfx.DrawText( this.pos.GetAdded( new Vec2( 5,205 ) ),
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 5,230 ) ),
 				"25PX Lucida Console","#FFF","Equipment:" );
 			
 			{
 				// Item 1.
 				gfx.DrawImage( pItem1.sprite,
-					this.pos.GetAdded( new Vec2( 5,215 ) ) );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,235 ) ),
+					this.pos.GetAdded( new Vec2( 5,240 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,260 ) ),
 					"20PX Lucida Console","#FFF",pItem1.name );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,265 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,290 ) ),
 					"20PX Lucida Console","#888",pItem1.defense );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,265 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,290 ) ),
 					"20PX Lucida Console","#E21",pItem1.damage );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,265 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,290 ) ),
 					"20PX Lucida Console","#1E2",pItem1.speed );
 				// Item 2.
 				gfx.DrawImage( pItem2.sprite,
-					this.pos.GetAdded( new Vec2( 5,275 ) ) );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,295 ) ),
+					this.pos.GetAdded( new Vec2( 5,300 ) ) );
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 40,320 ) ),
 					"20PX Lucida Console","#FFF",pItem2.name );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,325 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 5,350 ) ),
 					"20PX Lucida Console","#888",pItem2.defense );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,325 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 60,350 ) ),
 					"20PX Lucida Console","#E21",pItem2.damage );
-				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,325 ) ),
+				gfx.DrawText( this.pos.GetAdded( new Vec2( 115,350 ) ),
 					"20PX Lucida Console","#1E2",pItem2.speed );
+			}
+			
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 325,35 ) ),
+				"30PX Lucida Console","#FFF","Upgrades:" );
+			gfx.DrawText( this.pos.GetAdded( new Vec2( 320,60 ) ),
+				"15PX Lucida Console","#0FF","(" + pStats.levelUpPoints +
+				" points available)" );
+			
+			//
+			// gfx.DrawRect( this.pos.GetAdded( new Vec2( 325,75 ) ).GetSubtracted( new Vec2( 5,5 ) ),
+			// 	new Vec2( 185,275 ).GetAdded( new Vec2( 10,10 ) ),"#FFF" );
+			// gfx.DrawRect( this.pos.GetAdded( new Vec2( 325,75 ) ),
+			// 	new Vec2( 185,275 ),"#0F0" );
+			// 
+			if( pStats.levelUpPoints > 0 )
+			{
+				for( let i in luBoxes )
+				{
+					luBoxes[i].Draw( gfx );
+				}
 			}
 			
 			{

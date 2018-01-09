@@ -7,12 +7,14 @@ function Player( gfx )
 		this.defense = 0;
 		this.damage = 0;
 		this.speed = 0;
+		this.levelUpPoints = 0;
 		// 
 		this.Verify=()=>
 		{
-			if( this.experience > 255 )
+			if( this.experience > Math.min( 255,this.level )  )
 			{
 				++this.level;
+				++this.levelUpPoints;
 				this.experience = 0;
 			}
 			
@@ -212,7 +214,7 @@ function Player( gfx )
 		}
 		else
 		{
-			if( Random.RangeI( 0,10 ) > 7 )
+			if( Random.Chance( 40 ) )
 			{ // It is harder to replace item1 than item2.
 				item1 = equipment;
 			}

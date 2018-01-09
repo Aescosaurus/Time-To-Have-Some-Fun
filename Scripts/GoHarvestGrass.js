@@ -5,11 +5,17 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 	function GrassBlade( xPos )
 	{
 		this.pos = new Vec2( xPos,0 );
-		this.size = new Vec2( 35,gfx.ScreenHeight );
+		this.size = new Vec2( 35,450 );
 		
 		let hit = false;
 		
 		const speed = 5;
+		
+		const images =
+		[
+			gfx.LoadImage( "Images/Fields/Grass0.png" ),
+			gfx.LoadImage( "Images/Fields/Grass1.png" )
+		];
 		// 
 		this.Update=()=>
 		{
@@ -20,13 +26,18 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 		{
 			if( hit )
 			{
-				gfx.DrawCircle( new Vec2( this.pos.x + 25,gfx.ScreenHeight / 2 ),
-					50,"#F00" );
+				// gfx.DrawCircle( new Vec2( this.pos.x + 25,gfx.ScreenHeight / 2 ),
+				// 	50,"#F00" );
+				gfx.DrawImage( images[1],this.pos );
+			}
+			else
+			{
+				gfx.DrawImage( images[0],this.pos );
 			}
 			
-			gfx.DrawRect( this.pos,this.size,"#0F0" );
-			gfx.DrawRect( this.pos.GetAdded( new Vec2( 0,this.size.y / 2 - 20 ) ),
-				new Vec2( this.size.x,40 ),"#FA0" );
+			// gfx.DrawRect( this.pos,this.size,"#0F0" );
+			// gfx.DrawRect( this.pos.GetAdded( new Vec2( 0,this.size.y / 2 - 20 ) ),
+			// 	new Vec2( this.size.x,40 ),"#FA0" );
 		}
 		
 		this.Hit=()=>
@@ -128,6 +139,9 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 	
 	let s = new Score( "",false );
 	
+	let knife = gfx.LoadImage( "Images/Fields/Blade0.png" );
+	let knifeGold = gfx.LoadImage( "Images/Fields/Blade1.png" );
+	
 	const frames =
 	[
 		gfx.LoadImage( "Images/Fields/Harvesting1.png" ),
@@ -160,7 +174,7 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 				let bladeHit = false;
 				for( let i in blades )
 				{
-					if( ( new Rect( 50,gfx.ScreenHeight / 2 - 20,25,40 ) )
+					if( ( new Rect( 120,gfx.ScreenHeight / 2 - 20,25,40 ) )
 						.Overlaps( blades[i].GetRect() ) &&
 						kbd.KeyDown( ' ' ) )
 					{
@@ -184,9 +198,9 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 							++points;
 						}
 					}
-					if( points < 0 )
+					if( points < 1 )
 					{
-						points = 0;
+						points = 1;
 					}
 					s = new Score( points,true );
 					hasFailed = true;
@@ -244,19 +258,18 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 			
 			gfx.DrawText( new Vec2( 65,50 ),"45PX Lucida Console","#FFF","Harvest some Grass" );
 			
-			let color = "#0F0";
+			let knifeToDraw = knife;
 			for( let i in blades )
 			{
-				if( ( new Rect( 50,gfx.ScreenHeight / 2 - 20,25,40 ) )
+				if( ( new Rect( 120,gfx.ScreenHeight / 2 - 20,25,40 ) )
 					.Overlaps( blades[i].GetRect() ) )
 				{
-					color = "#FA0";
+					knifeToDraw = knifeGold;
 				}
 			}
 			
-			// gfx.DrawRect( new Vec2( 50,gfx.ScreenHeight / 2 - 20 ),
-			// 	new Vec2( 40,40 ),color );
-			gfx.DrawCircle( new Vec2( 50,gfx.ScreenHeight / 2 ),20,color );
+			// gfx.DrawCircle( new Vec2( 120,gfx.ScreenHeight / 2 ),20,color );
+			gfx.DrawImage( knifeToDraw,new Vec2( 0,gfx.ScreenHeight / 2 - 20 ) );
 			
 			s.Draw( gfx );
 		}

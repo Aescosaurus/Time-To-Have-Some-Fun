@@ -33,6 +33,7 @@ function Start()
 	equips.GenerateItems( gfx,p.GetResources() );
 	p.Start( m,equips );
 	a.Start();
+	m.Restart();
 }
 
 function Update()

@@ -29,21 +29,32 @@ function EquipmentItems()
 		// Rock stuff.
 		items.push( new Item( "Rock Boots",
 			gfx.LoadImage( "Images/EquipmentItems/RockBoots.png" ),
-			2,0,-1,"rocks" ) ); // From 1,0,-1
+			3,0,-1,"rocks" ) ); // From 1,0,-1
 		items.push( new Item( "Rockin Hat",
 			gfx.LoadImage( "Images/EquipmentItems/RockinHat.png" ),
-			1,0,0,"rocks" ) );
+			2,0,0,"rocks" ) );
 		items.push( new Item( "Rock Pop",
 			gfx.LoadImage( "Images/EquipmentItems/RockPop.png" ),
-			-1,1,1,"rocks" ) );
+			-1,1,2,"rocks" ) );
 		items.push( new Item( "Sharp Rock",
 			gfx.LoadImage( "Images/EquipmentItems/SharpRock.png" ),
-			-1,2,0,"rocks" ) );
+			-1,3,0,"rocks" ) );
 		
 		// Grass Stuff
 		items.push( new Item( "Grass Top",
 			gfx.LoadImage( "Images/EquipmentItems/GrassTop.png" ),
-			0,-1,2,"grass" ) );
+			1,-1,2,"grass" ) );
+		items.push( new Item( "Grass Kilt",
+			gfx.LoadImage( "Images/EquipmentItems/GrassKilt.png" ),
+			2,-1,1,"grass" ) );
+		items.push( new Item( "Grass Sock",
+			gfx.LoadImage( "Images/EquipmentItems/GrassSock1.png" ),
+			0,0,2,"grass" ) );
+		// I call this item name overloading, just make sure their names differ
+		//  in some way, for example a space or 2 or more at the end.
+		items.push( new Item( "Grass Sock ",
+			gfx.LoadImage( "Images/EquipmentItems/GrassSock2.png" ),
+			0,0,2,"grass" ) );
 	}
 	
 	this.GetItem=( name )=>

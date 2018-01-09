@@ -27,7 +27,7 @@ function FieldManager( gfx )
 			
 			const myId = id;
 			
-			const mine = gfx.LoadImage( "Images/Outcroppings/Mine1.png" );
+			const field = gfx.LoadImage( "Images/Fields/Field1.png" );
 			
 			let highlightingStart = false;
 			let drawAreYouSure = false;
@@ -140,7 +140,7 @@ function FieldManager( gfx )
 						"30PX Lucida Console","#FFF","Field" + myId );
 					
 					// gfx.DrawRect( new Vec2( menuRect.x + 10,menuRect.y + 45 ),new Vec2( menuRect.width - 20,150 ),"#FFF" );
-					gfx.DrawImage( mine,new Vec2( menuRect.x + 10,menuRect.y + 45 ) );
+					gfx.DrawImage( field,new Vec2( menuRect.x + 10,menuRect.y + 45 ) );
 					
 					if( highlightingStart )
 					{
@@ -229,7 +229,7 @@ function FieldManager( gfx )
 		this.pos = pos;
 		this.size = new Vec2( 50,50 );
 		const myId = id;
-		const fieldImage = gfx.LoadImage( "Images/Fields/Harvesting0.png" );
+		const fieldImage = gfx.LoadImage( "Images/Fields/Field0.png" );
 		
 		const m = new Menu( this.pos,this.size,myId );
 		
