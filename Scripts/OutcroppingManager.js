@@ -139,7 +139,8 @@ function OutcroppingManager( gfx )
 						"30PX Lucida Console","#FFF","Outcropping" + myId );
 					
 					// gfx.DrawRect( new Vec2( menuRect.x + 10,menuRect.y + 45 ),new Vec2( menuRect.width - 20,150 ),"#FFF" );
-					gfx.DrawImage( mine,new Vec2( menuRect.x + 10,menuRect.y + 45 ) );
+					gfx.DrawImage( mine,new Vec2( menuRect.x + 10,menuRect.y + 45 ),
+						new Vec2( 251,150 ) );
 					
 					if( highlightingStart )
 					{
@@ -258,7 +259,7 @@ function OutcroppingManager( gfx )
 			
 			// gfx.DrawRect( this.pos,this.size,"#222" );
 			// gfx.DrawGrad( this.pos,this.size,[ "#000","#F00" ] );
-			gfx.DrawImage( mineImage,this.pos );
+			gfx.DrawImage( mineImage,this.pos,this.size );
 			
 			m.Draw( gfx );
 		}

@@ -86,6 +86,7 @@ function GoMining( gfx,playerStats,playerResources )
 	
 	let s = new Score( "",false );
 	
+	const bg = gfx.LoadImage( "Images/Outcroppings/Backdrop.png" );
 	const frames =
 	[
 		gfx.LoadImage( "Images/Outcroppings/Mining0.png" ),
@@ -107,7 +108,7 @@ function GoMining( gfx,playerStats,playerResources )
 			
 			if( !failed )
 			{
-				if( ( kbd.KeyDown( ' ' ) || ( ms.IsDown() && canClick ) ) && !finished )
+				if( ( kbd.KeyDown( ' ' )/* || ( ms.IsDown() && canClick )*/ ) && !finished )
 				{
 					canUnclick = false;
 					power = 0;
@@ -169,7 +170,9 @@ function GoMining( gfx,playerStats,playerResources )
 		{
 			// gfx.DrawRect( new Vec2( 0,0 ),new Vec2( gfx.ScreenWidth,gfx.ScreenHeight ),"#3E3" );
 			// gfx.DrawGrad( new Vec2( 0,0 ),new Vec2( gfx.ScreenWidth,gfx.ScreenHeight ),[ "#55F","#33E","#11C" ] );
-			gfx.DrawImage( frames[Math.floor( progress )],new Vec2( 0,0 ) );
+			gfx.DrawImage( bg,new Vec2( 0,0 ),new Vec2( gfx.ScreenWidth,gfx.ScreenHeight ) );
+			gfx.DrawImage( frames[Math.floor( progress )],
+				new Vec2( 0,0 ),new Vec2( gfx.ScreenWidth,gfx.ScreenHeight ) );
 			
 			gfx.DrawText( new Vec2( 65,50 ),"45PX Lucida Console","#FFF","Mine an Outcropping" );
 			

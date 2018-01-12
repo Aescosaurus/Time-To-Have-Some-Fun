@@ -125,7 +125,7 @@ function TraderManager( gfx,equips )
 					
 					// gfx.DrawRect( new Vec2( menuRect.x + 160,menuRect.y + 5 ),
 					// 	new Vec2( 410,30 ),"#FFF" );
-					gfx.DrawImage( market,new Vec2( menuRect.x + 160,menuRect.y + 5 ) );
+					gfx.DrawImage( market,new Vec2( menuRect.x + 160,menuRect.y + 5 ),new Vec2( 422,32 ) );
 				}
 			}
 			
@@ -356,7 +356,7 @@ function TraderManager( gfx,equips )
 			
 			// gfx.DrawRect( this.pos,this.size,"#222" );
 			// gfx.DrawGrad( this.pos,this.size,[ "#0FF","#0F0" ] );
-			gfx.DrawImage( traderImage,this.pos );
+			gfx.DrawImage( traderImage,this.pos,this.size );
 			
 			m.Draw( gfx );
 			

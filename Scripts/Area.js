@@ -31,6 +31,124 @@ function Area( gfx,equips )
 			
 			return hexChars[Random.RangeI( spot - maxDist / 2,spot + maxDist / 2 )];
 		}
+		
+		const IsGreen=( color )=>
+		{
+			let chars = [];
+			for( let i = 1; i < color.length; ++i )
+			{
+				chars.push( color[i] );
+			}
+			
+			let totalR = 0;
+			let totalG = 0;
+			let totalB = 0;
+			{
+				for( let i = 0; i < 2; ++i )
+				{
+					if( chars[i] == 'A' )
+					{
+						totalR += 10;
+					}
+					else if( chars[i] == 'B' )
+					{
+						totalR += 11;
+					}
+					else if( chars[i] == 'C' )
+					{
+						totalR += 12;
+					}
+					else if( chars[i] == 'D' )
+					{
+						totalR += 13;
+					}
+					else if( chars[i] == 'E' )
+					{
+						totalR += 14;
+					}
+					else if( chars[i] == 'F' )
+					{
+						totalR += 15;
+					}
+					else
+					{
+						totalR += parseInt( chars[i] );
+					}
+				}
+				for( let i = 2; i < 4; ++i )
+				{
+					if( chars[i] == 'A' )
+					{
+						totalG += 10;
+					}
+					else if( chars[i] == 'B' )
+					{
+						totalG += 11;
+					}
+					else if( chars[i] == 'C' )
+					{
+						totalG += 12;
+					}
+					else if( chars[i] == 'D' )
+					{
+						totalG += 13;
+					}
+					else if( chars[i] == 'E' )
+					{
+						totalG += 14;
+					}
+					else if( chars[i] == 'F' )
+					{
+						totalG += 15;
+					}
+					else
+					{
+						totalG += parseInt( chars[i] );
+					}
+				}
+				for( let i = 4; i < 6; ++i )
+				{
+					if( chars[i] == 'A' )
+					{
+						totalB += 10;
+					}
+					else if( chars[i] == 'B' )
+					{
+						totalB += 11;
+					}
+					else if( chars[i] == 'C' )
+					{
+						totalB += 12;
+					}
+					else if( chars[i] == 'D' )
+					{
+						totalB += 13;
+					}
+					else if( chars[i] == 'E' )
+					{
+						totalB += 14;
+					}
+					else if( chars[i] == 'F' )
+					{
+						totalB += 15;
+					}
+					else
+					{
+						totalB += parseInt( chars[i] );
+					}
+				}
+			}
+			
+			if( totalR > totalG || totalB > totalG ||
+				totalR / 2 + totalB / 2 > totalG )
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
 		// 
 		this.color = "#";
 		this.img = -1;
@@ -42,6 +160,15 @@ function Area( gfx,equips )
 			for( let i = 0; i < 6; ++i )
 			{
 				this.color += Deviate( refArray[i],2 );
+			}
+			
+			while( !IsGreen( this.color ) )
+			{
+				this.color = "#";
+				for( let i = 0; i < 6; ++i )
+				{
+					this.color += Deviate( refArray[i],2 );
+				}
 			}
 			
 			if( Random.RangeI( 0,100 ) > 95 )
@@ -177,7 +304,7 @@ function Area( gfx,equips )
 				{
 					gfx.DrawImage( this.GetTile( new Vec2( x + drawOffset.x,
 						y + drawOffset.y ) ).GetImg(),new Vec2( x * tileSize,
-						y * tileSize ) );
+						y * tileSize ),new Vec2( tileSize,tileSize ) );
 				}
 				
 				// Make sure not to draw this 9 bumillion HECKING TIMES ARG!!! D:<

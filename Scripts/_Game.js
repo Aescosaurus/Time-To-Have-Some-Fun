@@ -13,6 +13,7 @@ const m = new Menu( gfx );
 const a = new Area( gfx,equips );
 const miningActivity = new GoMining( gfx,p.GetStats(),p.GetResources() );
 const harvestGrassActivity = new GoHarvestGrass( gfx,p.GetStats(),p.GetResources() );
+const fightActivity = new GoFighting( gfx,p.GetStats(),p.GetResources() );
 
 window.onload = function()
 {
@@ -29,6 +30,7 @@ function Start()
 {
 	kbd.Start();
 	ms.Start( gfx.GetCanvas() );
+	gfx.Start();
 	// Initialize below!
 	equips.GenerateItems( gfx,p.GetResources() );
 	p.Start( m,equips );

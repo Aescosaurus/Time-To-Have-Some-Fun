@@ -259,7 +259,7 @@ function FieldManager( gfx )
 			}
 			
 			// gfx.DrawGrad( this.pos,this.size,[ "#FFF","#FFF","#0F0" ] );
-			gfx.DrawImage( fieldImage,this.pos );
+			gfx.DrawImage( fieldImage,this.pos,this.size );
 			
 			m.Draw( gfx );
 		}

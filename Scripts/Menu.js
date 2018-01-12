@@ -17,34 +17,35 @@ function Menu( gfx )
 			
 			this.Generate=( id )=>
 			{
-				// Make sure buff is always a round int.
-				const buff = Math.max( 1,Math.floor( pLvl / 2 ) );
+				// const buff = pLvl / 2;
+				// const buff = Random.RangeF( 0.1,1.0 );
+				const buff = 0.5;
 				if( id == 0 )
 				{
 					this.name = "Rogue";
 					this.col = "#E21";
 					
-					this.def = Random.RangeI( -max,-min ) * buff;
-					this.dmg = Random.RangeI( min,max ) * buff;
-					this.spd = Random.RangeI( min,max ) * buff;
+					this.def = Math.ceil( Random.RangeI( -max,-min ) * buff );
+					this.dmg = Math.floor( Random.RangeI( min,max ) * buff );
+					this.spd = Math.floor( Random.RangeI( min,max ) * buff );
 				}
 				else if( id == 1 )
 				{
 					this.name = "Knight";
 					this.col = "#888";
 					
-					this.def = Random.RangeI( min,max ) * buff;
-					this.dmg = Random.RangeI( min,max ) * buff;
-					this.spd = Random.RangeI( -max,-min ) * buff;
+					this.def = Math.floor( Random.RangeI( min,max ) * buff );
+					this.dmg = Math.floor( Random.RangeI( min,max ) * buff );
+					this.spd = Math.ceil( Random.RangeI( -max,-min ) * buff );
 				}
 				else
 				{
 					this.name = "Pacifist";
 					this.col = "#1E2";
 					
-					this.def = Random.RangeI( min,max ) * buff;
-					this.dmg = Random.RangeI( -max,-min ) * buff;
-					this.spd = Random.RangeI( min,max ) * buff;
+					this.def = Math.floor( Random.RangeI( min,max ) * buff );
+					this.dmg = Math.ceil( Random.RangeI( -max,-min ) * buff );
+					this.spd = Math.floor( Random.RangeI( min,max ) * buff );
 				}
 			}
 		}
@@ -106,7 +107,8 @@ function Menu( gfx )
 					this.size.GetAdded( new Vec2( 10,10 ) ),"#FFF" );
 			}
 			
-			gfx.DrawRect( this.pos,this.size,"#E92" );
+			// gfx.DrawRect( this.pos,this.size,"#E92" );
+			gfx.DrawGrad( this.pos,this.size,[ "#E92" ] );
 			
 			gfx.DrawText( this.pos.GetAdded( new Vec2( 5,25 ) ),
 				"20PX Lucida Console","#FFF",preset.name );
@@ -242,7 +244,9 @@ function Menu( gfx )
 				gfx.DrawRect( this.pos.GetSubtracted( new Vec2( 5,5 ) ),
 					this.size.GetAdded( new Vec2( 10,10 ) ),"#FFF" );
 			}
-			gfx.DrawGrad( this.pos,this.size,[ "#E92","#E92","#F45" ] );
+			// gfx.DrawGrad( this.pos,this.size,[ "#E92","#E92","#F45" ] );
+			// gfx.DrawGrad( this.pos,this.size,[ "#F45","#E56","#A0A" ] );
+			gfx.DrawRect( this.pos,this.size,"#FA0" );
 			
 			if( overMenu )
 			{

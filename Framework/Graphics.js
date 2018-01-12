@@ -9,6 +9,13 @@ function Graphics()
 	this.ScreenHeight = canv.height;
 	this.ScreenRect = new Rect( 0,0,canv.width,canv.height );
 	// 
+	this.Start=()=>
+	{
+		ctx.imageSmoothingEnabled = false;
+		ctx.webkitImageSmoothingEnabled = false;
+		ctx.mozImageSmoothingEnabled = false;
+	}
+	
 	this.GetCanvas=()=>
 	{
 		return canv;
