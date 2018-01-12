@@ -5,33 +5,39 @@ function Rect( x,y,w,h )
 	this.width = w;
 	this.height = h;
 	// 
-	this.Contains = function( pos )
+	this.Contains=( pos )=>
 	{
 		return( pos.x > this.x && pos.x < this.x + this.width &&
 		        pos.y > this.y && pos.y < this.y + this.height );
 	}
 	
-	this.IsContainedBy = function( other )
+	this.IsContainedBy=( other )=>
 	{
 		return( this.x >= other.x && this.x + this.width <= other.x + other.width &&
 			this.y >= other.y && this.y + this.height <= other.y + other.height );
 	}
 	
-	this.Overlaps = function( other )
+	this.Overlaps=( other )=>
 	{
 		return ( other.x < this.x + this.width && other.x + other.width > this.x &&
 		         other.y < this.y + this.height && other.y + other.height > this.y );
 	}
 	
-	this.MoveBy = function( amount )
+	this.MoveBy=( amount )=>
 	{
-		this.x += amount;
-		this.y += amount;
+		this.x += amount.x;
+		this.y += amount.y;
 	}
 	
-	this.MoveTo = function( pos )
+	this.MoveTo=( pos )=>
 	{
 		this.x = pos.x;
 		this.y = pos.y;
+	}
+	
+	this.GetMovedBy=( amount )=>
+	{
+		return( new Rect( this.x + amount.x,this.y + amount.y,
+			this.width,this.height ) );
 	}
 }

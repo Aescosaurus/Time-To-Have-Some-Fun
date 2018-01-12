@@ -5,7 +5,7 @@ function Vec2( x = 0,y = 0,isConst = false )
 	const myX = x;
 	const myY = y;
 	// 
-	this.Add = function( other )
+	this.Add=( other )=>
 	{
 		if( isConst )
 		{
@@ -20,7 +20,7 @@ function Vec2( x = 0,y = 0,isConst = false )
 		return this;
 	}
 	
-	this.GetAdded = function( other )
+	this.GetAdded=( other )=>
 	{
 		if( !isConst )
 		{
@@ -32,7 +32,7 @@ function Vec2( x = 0,y = 0,isConst = false )
 		}
 	}
 	
-	this.Subtract = function( other )
+	this.Subtract=( other )=>
 	{
 		if( isConst )
 		{
@@ -47,7 +47,7 @@ function Vec2( x = 0,y = 0,isConst = false )
 		return this;
 	}
 	
-	this.GetSubtracted = function( other )
+	this.GetSubtracted=( other )=>
 	{
 		if( !isConst )
 		{
@@ -59,7 +59,7 @@ function Vec2( x = 0,y = 0,isConst = false )
 		}
 	}
 	
-	this.Multiply = function( amount )
+	this.Multiply=( other )=>
 	{
 		if( isConst )
 		{
@@ -74,7 +74,7 @@ function Vec2( x = 0,y = 0,isConst = false )
 		return this;
 	}
 	
-	this.GetMultiplied = function( amount )
+	this.GetMultiplied=( amount )=>
 	{
 		if( !isConst )
 		{
@@ -86,7 +86,7 @@ function Vec2( x = 0,y = 0,isConst = false )
 		}
 	}
 	
-	this.Divide = function( amount )
+	this.Divide=( amount )=>
 	{
 		if( isConst )
 		{
@@ -101,12 +101,12 @@ function Vec2( x = 0,y = 0,isConst = false )
 		return this;
 	}
 	
-	this.GetDivided = function( amount )
+	this.GetDivided=( amount )=>
 	{
 		return( new Vec2( this.x / amount,this.y / amount ) );
 	}
 	
-	this.Normalize = function()
+	this.Normalize=()=>
 	{
 		if( isConst )
 		{
@@ -127,7 +127,7 @@ function Vec2( x = 0,y = 0,isConst = false )
 		return this;
 	}
 	
-	this.GetNormalized = function()
+	this.GetNormalized=()=>
 	{
 		const div = Math.sqrt( this.x * this.x + this.y * this.y );
 		if( div === 0 )
@@ -138,17 +138,17 @@ function Vec2( x = 0,y = 0,isConst = false )
 		return( new Vec2( this.x / div,this.y / div ) );
 	}
 	
-	this.GetLengthSq = function()
+	this.GetLengthSq=()=>
 	{
 		return( x * x + y * y );
 	}
 	
-	this.GetLength = function()
+	this.GetLength=()=>
 	{
 		return Math.sqrt( this.GetLengthSq() );
 	}
 	
-	this.Equals = function( other )
+	this.Equals=( other )=>
 	{
 		return( this.x == other.x && this.y == other.y );
 	}

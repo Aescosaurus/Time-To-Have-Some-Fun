@@ -15,9 +15,14 @@ function OutcroppingManager( gfx )
 				gfx.ScreenWidth / 2.4,gfx.ScreenHeight - this.size.y / 2 );
 			let canCloseMenu = false;
 			let canOpenMenu = false;
+			let canStartMining = false;
+			
+			let dead = false;
 			
 			let xButton = new Rect( menuRect.x + menuRect.width - 40,menuRect.y,40,40 );
 			let overXButton = false;
+			const xButtonOut = gfx.LoadImage( "Images/MenuItems/XButton0.png" );
+			const xButtonOver = gfx.LoadImage( "Images/MenuItems/XButton1.png" );
 			
 			const myId = id;
 			
@@ -27,10 +32,15 @@ function OutcroppingManager( gfx )
 			let drawAreYouSure = false;
 			let yesIsHighlighted = false;
 			let noIsHighlighted = false;
+			
+			let overMenu = false;
 			// 
-			this.Update = function( kbd,ms )
+			this.Update=( kbd,ms,selectRect,miningActivity )=>
 			{
-				isHovering = ( new Rect( this.pos.x,this.pos.y,this.size.x,this.size.y ) ).Contains( ms.GetPos() );
+				isHovering = ( ( new Rect( this.pos.x,this.pos.y,
+					this.size.x,this.size.y ) ).Contains( ms.GetPos() ) ||
+					( new Rect( this.pos.x,this.pos.y,
+					this.size.x,this.size.y ) ).Overlaps( selectRect ) );
 				overXButton = ( xButton.Contains( ms.GetPos() ) );
 				highlightingStart = ( new Rect( menuRect.x + 7,menuRect.y + 202,
 					menuRect.width - 14,46 ) ).Contains( ms.GetPos() );
@@ -39,21 +49,41 @@ function OutcroppingManager( gfx )
 				noIsHighlighted = ( new Rect( menuRect.x + ( menuRect.width - 14 ) / 2 + 10,menuRect.y + 205,
 					( menuRect.width - 14 ) / 2 - 5,40 ) ).Contains( ms.GetPos() );
 				drawAreYouSure = highlightingStart;
+				overMenu = menuRect.Contains( ms.GetPos() );
+				
+				if( ( ms.IsDown() || kbd.KeyDown( 'E' ) ) &&
+					isHovering && canOpenMenu )
+				{
+					menuOpen = true;
+					canCloseMenu = false;
+				}
 				
 				if( ms.IsDown() )
 				{
-					if( isHovering && canOpenMenu )
-					{
-						menuOpen = true;
-						canCloseMenu = false;
-					}
-					
-					if( canCloseMenu && ( !menuRect.Contains( ms.GetPos() ) || overXButton ) )
+					if( ( !menuRect.Contains( ms.GetPos() ) || overXButton ) &&
+						canCloseMenu )
 					{
 						menuOpen = false;
 					}
+					
+					if( highlightingStart && canStartMining )
+					{
+						if( yesIsHighlighted )
+						{
+							if( Random.Chance( 100 ) )
+							{
+								miningActivity.Open();
+								dead = true;
+							}
+						}
+						else if( noIsHighlighted )
+						{
+							// menuOpen = false;
+						}
+					}
 				}
 				
+				// TODO: Consolidate all of this if possible.
 				canCloseMenu = false;
 				if( !ms.IsDown() && ( !isHovering || overXButton ) )
 				{
@@ -65,29 +95,52 @@ function OutcroppingManager( gfx )
 				{
 					canOpenMenu = true;
 				}
+				
+				canStartMining = false;
+				if( !ms.IsDown() && highlightingStart && menuOpen )
+				{
+					canStartMining = true;
+				}
 			}
 			
-			this.Draw = function( gfx )
+			this.Draw=( gfx )=>
 			{
 				if( menuOpen )
 				{
+					if( overMenu )
+					{
+						gfx.DrawRect( new Vec2( menuRect.x - 5,menuRect.y - 5 ),
+							new Vec2( menuRect.width + 10,menuRect.height + 10 ),
+							"#FFF" );
+					}
 					gfx.DrawGrad( new Vec2( menuRect.x,menuRect.y ),
 						new Vec2( menuRect.width,menuRect.height ),
 						[ "#333","#444","#777" ] );
 					
-					let color = "#FFF";
+					// let color = "#FFF";
+					// if( overXButton )
+					// {
+					// 	color = "#F00";
+					// }
+					// gfx.DrawCircle( new Vec2( xButton.x + xButton.width / 2,xButton.y + xButton.width / 2 ),
+					// 	xButton.width / 2.5,color );
+					let drawButton;
 					if( overXButton )
 					{
-						color = "#F00";
+						drawButton = xButtonOver;
 					}
-					gfx.DrawCircle( new Vec2( xButton.x + xButton.width / 2,xButton.y + xButton.width / 2 ),
-						xButton.width / 2.5,color );
+					else
+					{
+						drawButton = xButtonOut;
+					}
+					gfx.DrawImage( drawButton,new Vec2( xButton.x,xButton.y ) );
 					
 					gfx.DrawText( new Vec2( menuRect.x + 5,menuRect.y + 30 ),
 						"30PX Lucida Console","#FFF","Outcropping" + myId );
 					
 					// gfx.DrawRect( new Vec2( menuRect.x + 10,menuRect.y + 45 ),new Vec2( menuRect.width - 20,150 ),"#FFF" );
-					gfx.DrawImage( mine,new Vec2( menuRect.x + 10,menuRect.y + 45 ) );
+					gfx.DrawImage( mine,new Vec2( menuRect.x + 10,menuRect.y + 45 ),
+						new Vec2( 251,150 ) );
 					
 					if( highlightingStart )
 					{
@@ -99,11 +152,11 @@ function OutcroppingManager( gfx )
 						"30PX Lucida Console","#FFF","Mine some Ore" );
 					
 					gfx.DrawText( new Vec2( menuRect.x + 10,menuRect.y + 270 ),
-						"15PX Lucida Console","#FFF","Ambush Chance: " );
+						"15PX Lucida Console","#FFF","Ambush Chance: 0%" );
 					gfx.DrawText( new Vec2( menuRect.x + 10,menuRect.y + 290 ),
-						"15PX Lucida Console","#FFF","Difficulty: " );
+						"15PX Lucida Console","#FFF","Difficulty: Easy" );
 					gfx.DrawText( new Vec2( menuRect.x + 10,menuRect.y + 310 ),
-						"15PX Lucida Console","#FFF","Potential Profit: " );
+						"15PX Lucida Console","#FFF","Potential Profit: 6 Ore" );
 					
 					if( drawAreYouSure )
 					{
@@ -151,14 +204,24 @@ function OutcroppingManager( gfx )
 				}
 			}
 			
-			this.IsHovering = function()
+			this.Close=()=>
+			{
+				menuOpen = false;
+			}
+			
+			this.IsHovering=()=>
 			{
 				return isHovering;
 			}
 			
-			this.IsOpen = function()
+			this.IsOpen=()=>
 			{
 				return menuOpen;
+			}
+			
+			this.WillKill=()=>
+			{
+				return dead;
 			}
 		}
 		// 
@@ -166,15 +229,26 @@ function OutcroppingManager( gfx )
 		this.pos = pos;
 		this.size = new Vec2( 50,50 );
 		const myId = id;
+		const mineImage = gfx.LoadImage( "Images/Outcroppings/Mine0.png" );
 		
 		const m = new Menu( this.pos,this.size,myId );
+		
+		let willDestroy = false;
 		// 
-		this.Update = function( kbd,ms )
+		this.Update=( kbd,ms,selectRect,activity,noMenusOpen )=>
 		{
-			m.Update( kbd,ms );
+			if( noMenusOpen )
+			{
+				m.Update( kbd,ms,selectRect,activity );
+			}
+			
+			if( m.WillKill() )
+			{
+				willDestroy = true;
+			}
 		}
 		
-		this.Draw = function( gfx )
+		this.Draw=( gfx )=>
 		{
 			if( m.IsHovering() )
 			{
@@ -184,50 +258,67 @@ function OutcroppingManager( gfx )
 			}
 			
 			// gfx.DrawRect( this.pos,this.size,"#222" );
-			gfx.DrawGrad( this.pos,this.size,[ "#000","#F00" ] );
+			// gfx.DrawGrad( this.pos,this.size,[ "#000","#F00" ] );
+			gfx.DrawImage( mineImage,this.pos,this.size );
 			
 			m.Draw( gfx );
 		}
 		
-		this.Move = function( amount )
+		this.Move=( amount )=>
 		{
 			this.pos.Add( amount );
 		}
 		
-		this.CloseMenu = function()
+		this.CloseMenu=()=>
 		{
-			menuOpen = false;
+			// menuOpen = false;
+			m.Close();
 		}
 		
-		this.GetPos = function()
+		this.GetPos=()=>
 		{
 			return this.pos;
 		}
 		
-		this.IsSelected = function()
+		this.IsSelected=()=>
 		{
 			return m.IsHovering();
 		}
 		
-		this.HasMenuOpen = function()
+		this.HasMenuOpen=()=>
 		{
 			return m.IsOpen();
+		}
+		
+		this.WillDest=()=>
+		{
+			return willDestroy;
+		}
+		
+		this.GetRect=()=>
+		{
+			return( new Rect( this.pos.x,this.pos.y,this.size.x,this.size.y ) );
 		}
 	}
 	// 
 	let outcroppings = [];
 	let nRocks = 0;
 	// 
-	this.Update = function( ms,player )
+	this.Update=( kbd,ms,selectRect,activity,noMenusOpen )=>
 	{
 		// for( let i = 0; i < outcroppings.length; ++i )
 		for( let i in outcroppings )
 		{
-			outcroppings[i].Update( ms,player );
+			outcroppings[i].Update( kbd,ms,selectRect,activity,noMenusOpen );
+			
+			if( outcroppings[i].WillDest() )
+			{
+				outcroppings.splice( i,1 );
+			}
 		}
 	}
 	
-	this.Draw = function( gfx )
+	this.Draw=( gfx )=>
 	{
 		// The whole highlighted fiasco is for the highlighting to not be covered by other outcroppings.
 		//  Also menuOpen draws on top of any highlighted thing.
@@ -235,14 +326,6 @@ function OutcroppingManager( gfx )
 		let menuOpen = { Draw: function( gfx ){ let g = 2; } };
 		for( let i in outcroppings )
 		{
-			// if( !outcroppings[i].IsSelected() && !outcroppings[i].HasMenuOpen() )
-			// {
-			// 	outcroppings[i].Draw( gfx );
-			// }
-			// else
-			// {
-			// 	highlighted = outcroppings[i];
-			// }
 			if( outcroppings[i].IsSelected() )
 			{
 				highlighted = outcroppings[i];
@@ -260,12 +343,12 @@ function OutcroppingManager( gfx )
 		menuOpen.Draw( gfx );
 	}
 	
-	this.Add = function( pos )
+	this.Add=( pos )=>
 	{
 		outcroppings.push( new Outcropping( pos,nRocks++ ) );
 	}
 	
-	this.MoveAll = function( amount )
+	this.MoveAll=( amount )=>
 	{
 		for( let i in outcroppings )
 		{
@@ -273,11 +356,36 @@ function OutcroppingManager( gfx )
 		}
 	}
 	
-	this.CloseMenu = function()
+	this.CloseMenu=()=>
 	{
 		for( let i in outcroppings )
 		{
 			outcroppings[i].CloseMenu();
 		}
+	}
+	
+	this.HasSelectedRock=()=>
+	{
+		for( let i in outcroppings )
+		{
+			if( outcroppings[i].HasMenuOpen() )
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	this.IsBlocked=( blockPos )=>
+	{
+		for( let i in outcroppings )
+		{
+			if( outcroppings[i].GetPos().Equals( blockPos ) )
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

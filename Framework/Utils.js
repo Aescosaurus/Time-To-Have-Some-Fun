@@ -1,71 +1,30 @@
 function Random(){}
-	Random.RangeI = function( min,max )
+	Random.RangeI=( min,max )=>
 	{
 		return( Math.floor( Math.random() * ( 1 + max - min ) ) + min );
 	}
 	
-	Random.RangeF = function( min,max )
+	Random.RangeF=( min,max )=>
 	{
 		return( ( Math.random() * ( max - min ) ) + min );
 	}
-// 
-function Timer()
-{
-	function MiniTimer( func,time,repeat )
+	
+	Random.DeviateI=( amount,maxDeviation )=>
 	{
-		this.func = func;
-		this.time = time;
-		this.repeat = repeat;
-		this.dead = false;
-		// 
-		this.Update = function()
-		{
-			--this.time;
-			
-			if( this.time < 1 )
-			{
-				this.func();
-				
-				if( !this.repeat )
-				{
-					this.dead = true;
-				}
-				else
-				{
-					this.time = time;
-				}
-			}
-		}
-		
-		this.IsAlive = function()
-		{
-			return !this.dead;
-		}
-	}
-	// 
-	let timers = [];
-	// 
-	this.Update = function()
-	{
-		for( let i = 0; i < timers.length; ++i )
-		{
-			timers[i].Update();
-			
-			if( !timers[i].IsAlive() )
-			{
-				timers.splice( i,1 );
-			}
-		}
+		return( amount + Random.RangeI( -maxDeviation,maxDeviation ) );
 	}
 	
-	this.Add = function( func,time,repeat = false )
+	Random.DeviateF=( amount,maxDeviation )=>
 	{
-		timers.push( new MiniTimer( func,time,repeat ) );
-		return( timers.length - 1 );
+		return( amount + Random.RangeF( -maxDeviation,maxDeviation ) );
 	}
 	
-	this.Remove = function( index )
+	Random.Chance=( percentChance )=>
 	{
-		timers.splice( index,1 );
+		return( Random.RangeF( 0,100 ) < percentChance );
 	}
-}
+function Str(){}
+	Str.FirstUpperCase=( str )=>
+	{
+		return( str.charAt( 0 ).toUpperCase() + str.slice( 1 ) );
+	}

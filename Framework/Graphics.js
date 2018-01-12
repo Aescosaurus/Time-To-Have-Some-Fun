@@ -9,17 +9,29 @@ function Graphics()
 	this.ScreenHeight = canv.height;
 	this.ScreenRect = new Rect( 0,0,canv.width,canv.height );
 	// 
-	this.GetCanvas = function()
+	this.Start=()=>
+	{
+		ctx.imageSmoothingEnabled = false;
+		ctx.webkitImageSmoothingEnabled = false;
+		ctx.mozImageSmoothingEnabled = false;
+	}
+	
+	this.GetCanvas=()=>
 	{
 		return canv;
 	}
 	
-	this.GetContext = function()
+	this.GetContext=()=>
 	{
 		return ctx;
 	}
 	
-	this.LoadImage = function( url )
+	this.SetAlpha=( alpha )=>
+	{
+		ctx.globalAlpha = alpha;
+	}
+	
+	this.LoadImage=( url )=>
 	{
 		for( let i = 0; i < images.length; ++i )
 		{
@@ -37,8 +49,14 @@ function Graphics()
 		return( images.length - 1 );
 	}
 	
-	this.DrawImage = function( index,pos = new Vec2( 0,0 ),size = new Vec2( 0,0 ) )
+	this.DrawImage=( index,pos = new Vec2( 0,0 ),size = new Vec2( 0,0 ) )=>
 	{
+		if( isNaN( pos.x ) || isNaN( pos.y ) || isNaN( size.x ) || isNaN( size.y ) )
+		{
+			console.log( "Drawing image to NaN cancelled!" );
+			return false;
+		}
+		
 		if( size.x != 0 && size.y != 0 )
 		{
 			ctx.drawImage( images[index],pos.x,pos.y,size.x,size.y );
@@ -49,14 +67,24 @@ function Graphics()
 		}
 	}
 	
-	this.DrawRect = function( pos,size,c )
+	this.DrawRect=( pos,size,c )=>
 	{
+		if( isNaN( pos.x ) || isNaN( pos.y ) || isNaN( size.x ) || isNaN( size.y ) )
+		{
+			console.log( "Drawing rectangle to NaN cancelled!" );
+			return false;
+		}
 		ctx.fillStyle = c;
 		ctx.fillRect( pos.x,pos.y,size.x,size.y );
 	}
 	
-	this.DrawCircle = function( pos,radius,c )
+	this.DrawCircle=( pos,radius,c )=>
 	{
+		if( isNaN( pos.x ) || isNaN( pos.y ) || isNaN( radius ) )
+		{
+			console.log( "Drawing circle to NaN cancelled!" );
+			return false;
+		}
 		ctx.fillStyle = c;
 		
 		ctx.beginPath();
@@ -64,8 +92,13 @@ function Graphics()
 		ctx.fill();
 	}
 	
-	this.DrawGrad = function( pos,size,colors )
+	this.DrawGrad=( pos,size,colors )=>
 	{
+		if( isNaN( pos.x ) || isNaN( pos.y ) || isNaN( size.x ) || isNaN( size.y ) )
+		{
+			console.log( "Drawing gradient rectangle to NaN cancelled!" );
+			return false;
+		}
 		let grad = ctx.createLinearGradient( pos.x,pos.y,pos.x + size.x,pos.y + size.y );
 		
 		const stopAddAmount = 1.0 / colors.length;
@@ -80,8 +113,13 @@ function Graphics()
 		ctx.fillRect( pos.x,pos.y,size.x,size.y );
 	}
 	
-	this.DrawText = function( pos,font,color,msg )
+	this.DrawText=( pos,font,color,msg )=>
 	{
+		if( isNaN( pos.x ) || isNaN( pos.y ) )
+		{
+			console.log( "Drawing text to NaN cancelled!" );
+			return false;
+		}
 		ctx.fillStyle = color;
 		ctx.font = font;
 		ctx.fillText( msg,pos.x,pos.y );

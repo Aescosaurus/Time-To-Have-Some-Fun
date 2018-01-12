@@ -11,9 +11,9 @@ function Keyboard()
 	
 	let nKeysPressed = 0;
 	// 
-	this.Start = function()
+	this.Start=()=>
 	{
-		onkeydown = onkeyup = function( e )
+		onkeydown = onkeyup = ( e ) =>
 		{
 			const keyIsPressed = ( e.type == 'keydown' );
 			keyMap[e.keyCode] = keyIsPressed;
@@ -39,7 +39,7 @@ function Keyboard()
 		}
 	}
 	
-	this.KeyDown = function( key )
+	this.KeyDown=( key )=>
 	{
 		if( typeof( key ) === 'string' )
 		{
@@ -49,12 +49,12 @@ function Keyboard()
 		return keyMap[key];
 	}
 	
-	this.AnyKey = function()
+	this.AnyKey=()=>
 	{
 		return nKeysPressed > 0;
 	}
 	
-	this.ActiveKeys = function()
+	this.ActiveKeys=()=>
 	{
 		return pressedKeys;
 	}

@@ -4,33 +4,50 @@ function Mouse()
 	let isDown = false;
 	
 	// 
-	this.Start = function( canvas )
+	this.Start=( canvas )=>
 	{
-		canvas.addEventListener( "mousedown",function()
+		canvas.addEventListener( "mousedown",() =>
 		{
 			isDown = true;
 		} );
 		
-		canvas.addEventListener( "mouseup",function()
+		canvas.addEventListener( "mouseup",() =>
 		{
 			isDown = false;
 		} );
 		
-		canvas.addEventListener( "mousemove",function( e )
+		canvas.addEventListener( "mousemove",( e ) =>
 		{
 			const rect = canvas.getBoundingClientRect();
 			const root = document.documentElement;
 			pos.x = e.clientX - rect.left - root.scrollLeft;
 			pos.y = e.clientY - rect.top - root.scrollTop;
 		} );
+		
+		canvas.addEventListener( "touchmove",( e ) =>
+		{
+			e.preventDefault();
+			pos.x = e.changedTouches[0].clientX;
+			pos.y = e.changedTouches[0].clientY;
+		} );
+		
+		canvas.addEventListener( "touchstart",( e ) =>
+		{
+			isDown = true;
+		} );
+		
+		canvas.addEventListener( "touchend",( e ) =>
+		{
+			isDown = false;
+		} );
 	}
 	
-	this.GetPos = function()
+	this.GetPos=()=>
 	{
 		return pos;
 	}
 	
-	this.IsDown = function()
+	this.IsDown=()=>
 	{
 		return isDown;
 	}

@@ -3,7 +3,7 @@ function Audio()
 	let sounds = [];
 	let curSound = 0;
 	//
-	this.LoadSound = function( source )
+	this.LoadSound=( source )=>
 	{
 		const nowSound = curSound;
 		++curSound;
@@ -11,13 +11,13 @@ function Audio()
 		return nowSound;
 	}
 
-	this.PlaySound = function( id )
+	this.PlaySound=( id )=>
 	{
 		sounds[id].currentTime = 0;
 		sounds[id].play();
 	}
 
-	this.StopAll = function()
+	this.StopAll=()=>
 	{
 		for( let i in sounds )
 		{
