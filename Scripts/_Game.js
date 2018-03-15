@@ -35,6 +35,7 @@ function Start()
 	equips.GenerateItems( gfx,p.GetResources() );
 	p.Start( m,equips );
 	a.Start();
+	harvestGrassActivity.Start();
 	m.Restart();
 }
 
@@ -49,6 +50,7 @@ function Update()
 		m.Update( kbd,ms,p );
 		a.Update( kbd,ms,p,miningActivity,harvestGrassActivity );
 	}
+	// console.log( ms.GetPos() );
 }
 
 function Draw()

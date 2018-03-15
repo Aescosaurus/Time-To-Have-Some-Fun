@@ -46,7 +46,7 @@ function TraderManager( gfx,equips )
 				drawAreYouSure = highlightingStart;
 				overMenu = menuRect.Contains( ms.GetPos() );
 				
-				if( ( ms.IsDown() || kbd.KeyDown( 'E' ) ) &&
+				if( ( ms.IsDown()/* || kbd.KeyDown( 'E' )*/ ) &&
 					isHovering && canOpenMenu )
 				{
 					menuOpen = true;
@@ -173,8 +173,8 @@ function TraderManager( gfx,equips )
 			
 			let amIHidden = false;
 			
-			const rocks = gfx.LoadImage( "Images/MenuItems/Rock.png" );
-			const grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
+			Menu.prototype.rocks = gfx.LoadImage( "Images/MenuItems/Rock.png" );
+			Menu.prototype.grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
 			// 
 			this.Update=( kbd,ms,selectRect,pResources,menuIsOpen )=>
 			{
