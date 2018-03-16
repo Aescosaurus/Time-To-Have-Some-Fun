@@ -2,7 +2,8 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 {
 	function Score( scoreMsg,active = true )
 	{
-		let pos = new Vec2( gfx.ScreenWidth / 2,gfx.ScreenHeight / 2 );
+		let pos = new Vec2( gfx.ScreenWidth / 2,
+			gfx.ScreenHeight / 2 );
 		const opacityLossRate = 0.02;
 		let opacity = 1.0;
 		
@@ -136,19 +137,23 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 	const ResetGame=()=>
 	{
 		grassTufts = [];
-		this.Start();
 		finished = false;
 		gameOpen = false;
+		gavePoints = false;
+		s = new Score( "",false );
+		this.Start();
 	}
 	
 	const GivePlayerPoints=( amount )=>
 	{
+		// 
 		finished = true;
-		gameOpen = false;
-		s = new Score( amount,)
+		// gameOpen = false;
+		gavePoints = true;
+		s = new Score( amount,true );
 		
 		playerResources.grass += amount;
-		ResetGame();
+		// ResetGame();
 	}
 	// 
 	let gameOpen = false;
@@ -158,6 +163,7 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 	const grassBG = gfx.LoadImage( "Images/Fields/FieldBackground.png" );
 	
 	let finished = false;
+	let gavePoints = false;
 	
 	let s = new Score( "",false );
 	// 
@@ -195,10 +201,16 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 	}
 	
 	this.Update=( kbd,ms )=>
-	{
+	{	
 		if( gameOpen )
 		{
 			s.Update();
+			
+			if( s.IsFinished() )
+			{
+				ResetGame();
+				return;
+			}
 			
 			for( let i in grassTufts )
 			{
@@ -210,15 +222,21 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 			{
 				if( !grassTufts[i].Finished() )
 				{
+					finished = false;
 					return;
 				}
 				if( grassTufts[i].CompletedCorrectly() )
 				{
+					finished = true;
 					++points;
 				}
 			}
+			
 			// Only code to give points should go here.
-			GivePlayerPoints( points );
+			if( !gavePoints && finished )
+			{
+				GivePlayerPoints( points );
+			}
 		}
 	}
 	
