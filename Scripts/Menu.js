@@ -150,6 +150,8 @@ function Menu( gfx )
 	let canClose = false;
 	let overMenu = false;
 	
+	let mousePos = new Vec2( 0,0 );
+	
 	let obscuring = false;
 	let notObscured = -1;
 	
@@ -158,6 +160,8 @@ function Menu( gfx )
 	// Images
 	const xButtonOut = gfx.LoadImage( "Images/MenuItems/XButton0.png" );
 	const xButtonOver = gfx.LoadImage( "Images/MenuItems/XButton1.png" );
+	
+	const cursorImg = gfx.LoadImage( "Images/MenuItems/Cursor.png" );
 	
 	const rock = gfx.LoadImage( "Images/MenuItems/Rock.png" );
 	const grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
@@ -232,6 +236,8 @@ function Menu( gfx )
 				this.Restart();
 			}
 		}
+		
+		mousePos = ms.GetPos();
 	}
 	
 	this.Draw=( gfx )=>
@@ -367,6 +373,11 @@ function Menu( gfx )
 				gfx.DrawImage( drawButton,new Vec2( xButton.x,xButton.y ) );
 			}
 		}
+		
+		const cursorSize = new Vec2( 25,25 );
+		// gfx.DrawImage( cursorImg,mousePos
+		// 	.GetSubtracted( cursorSize.GetDivided( 4.0 ) ),
+		// 	cursorSize );
 	}
 	
 	this.UpdateStats=( playerStats )=>

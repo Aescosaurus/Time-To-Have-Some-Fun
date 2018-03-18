@@ -51,7 +51,7 @@ function OutcroppingManager( gfx )
 				drawAreYouSure = highlightingStart;
 				overMenu = menuRect.Contains( ms.GetPos() );
 				
-				if( ( ms.IsDown() || kbd.KeyDown( 'E' ) ) &&
+				if( ( ms.IsDown()/* || kbd.KeyDown( 'E' )*/ ) &&
 					isHovering && canOpenMenu )
 				{
 					menuOpen = true;
@@ -229,7 +229,8 @@ function OutcroppingManager( gfx )
 		this.pos = pos;
 		this.size = new Vec2( 50,50 );
 		const myId = id;
-		const mineImage = gfx.LoadImage( "Images/Outcroppings/Mine0.png" );
+		Outcropping.prototype.mineImage = gfx
+			.LoadImage( "Images/Outcroppings/Mine0.png" );
 		
 		const m = new Menu( this.pos,this.size,myId );
 		
@@ -259,7 +260,7 @@ function OutcroppingManager( gfx )
 			
 			// gfx.DrawRect( this.pos,this.size,"#222" );
 			// gfx.DrawGrad( this.pos,this.size,[ "#000","#F00" ] );
-			gfx.DrawImage( mineImage,this.pos,this.size );
+			gfx.DrawImage( Outcropping.prototype.mineImage,this.pos,this.size );
 			
 			m.Draw( gfx );
 		}

@@ -33,8 +33,8 @@ function GoMining( gfx,playerStats,playerResources )
 				gfx.SetAlpha( opacity );
 				gfx.DrawText( new Vec2( gfx.ScreenWidth / 8,gfx.ScreenHeight / 2 ),
 					"50PX Lucida Console","#EE5","Ore Harvested: " + scoreMsg );
-				gfx.DrawText( new Vec2( gfx.ScreenWidth / 4,gfx.ScreenHeight / 1.7 ),
-					"40PX Lucida Console","#EE5","EXP Gained: " + expGain );
+				// gfx.DrawText( new Vec2( gfx.ScreenWidth / 4,gfx.ScreenHeight / 1.7 ),
+				// 	"40PX Lucida Console","#EE5","EXP Gained: " + expGain );
 				gfx.SetAlpha( 1.0 );
 			}
 		}

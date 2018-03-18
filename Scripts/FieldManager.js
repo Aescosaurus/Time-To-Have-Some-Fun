@@ -36,7 +36,7 @@ function FieldManager( gfx )
 			
 			let overMenu = false;
 			// 
-			this.Update=( kbd,ms,selectRect,miningActivity )=>
+			this.Update=( kbd,ms,selectRect,harvestActivity )=>
 			{
 				isHovering = ( ( new Rect( this.pos.x,this.pos.y,
 					this.size.x,this.size.y ) ).Contains( ms.GetPos() ) ||
@@ -52,7 +52,7 @@ function FieldManager( gfx )
 				drawAreYouSure = highlightingStart;
 				overMenu = menuRect.Contains( ms.GetPos() );
 				
-				if( ( ms.IsDown() || kbd.KeyDown( 'E' ) ) &&
+				if( ( ms.IsDown()/* || kbd.KeyDown( 'E' )*/ ) &&
 					isHovering && canOpenMenu )
 				{
 					menuOpen = true;
@@ -73,7 +73,7 @@ function FieldManager( gfx )
 						{
 							if( Random.Chance( 100 ) )
 							{
-								miningActivity.Open();
+								harvestActivity.Open();
 								dead = true;
 							}
 						}
@@ -229,7 +229,7 @@ function FieldManager( gfx )
 		this.pos = pos;
 		this.size = new Vec2( 50,50 );
 		const myId = id;
-		const fieldImage = gfx.LoadImage( "Images/Fields/Field0.png" );
+		Field.prototype.fieldImage = gfx.LoadImage( "Images/Fields/Field0.png" );
 		
 		const m = new Menu( this.pos,this.size,myId );
 		
@@ -259,7 +259,7 @@ function FieldManager( gfx )
 			}
 			
 			// gfx.DrawGrad( this.pos,this.size,[ "#FFF","#FFF","#0F0" ] );
-			gfx.DrawImage( fieldImage,this.pos,this.size );
+			gfx.DrawImage( Field.prototype.fieldImage,this.pos,this.size );
 			
 			m.Draw( gfx );
 		}
