@@ -18,13 +18,13 @@ function EquipmentItems()
 		//  Over 10 chars and it takes up too much space in menus.
 		items.push( new Item( "NULL",
 			gfx.LoadImage( "Images/MenuItems/Rock.png" ),
-			0,0,0,"NULL" ) );
+			0,0,0,"rocks" ) );
 		items.push( new Item( "Pajamas",
 			gfx.LoadImage( "Images/EquipmentItems/Pajamas.png" ),
-			1,0,0,"NULL" ) );
+			1,0,0,"grass" ) );
 		items.push( new Item( "Cute Socks",
 			gfx.LoadImage( "Images/EquipmentItems/CuteSocks.png" ),
-			0,0,1,"NULL" ) );
+			0,0,1,"grass" ) );
 		
 		// Rock stuff.
 		items.push( new Item( "Rock Boots",

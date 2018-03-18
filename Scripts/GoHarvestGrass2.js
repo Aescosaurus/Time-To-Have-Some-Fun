@@ -67,6 +67,8 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 		let hit = false;
 		let done = false;
 		
+		let canClick = false;
+		
 		let active = false;
 		const myImg = Random.RangeI( 0,Tuft.prototype.Imgs.length - 1 );
 		// 
@@ -92,12 +94,16 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 				
 				if( active )
 				{
-					setTimeout( function()
+					if( !ms.IsDown() ) canClick = true;
+					if( ms.IsDown() && canClick )
 					{
-						active = false;
-						done = true;
-					},1200 );
-				
+						setTimeout( function()
+						{
+							active = false;
+							done = true;
+						},1200 );
+					}
+					
 					if( this.Rect.Contains( ms.GetPos() ) &&
 						ms.IsDown() )
 					{
@@ -161,6 +167,7 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 	let grassTufts = [];
 	
 	const grassBG = gfx.LoadImage( "Images/Fields/FieldBackground.png" );
+	const overlay = gfx.LoadImage( "Images/Fields/OverlayText.png" );
 	
 	let finished = false;
 	let gavePoints = false;
@@ -235,6 +242,7 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 			// Only code to give points should go here.
 			if( !gavePoints && finished )
 			{
+				if( points == 5 ) ++points;
 				GivePlayerPoints( points );
 			}
 		}
@@ -257,6 +265,9 @@ function GoHarvestGrass( gfx,playerStats,playerResources )
 			}
 			
 			s.Draw( gfx );
+			
+			gfx.DrawImage( overlay,new Vec2( 0,0 ),
+				new Vec2( gfx.ScreenWidth,gfx.ScreenHeight ) );
 		}
 	}
 	

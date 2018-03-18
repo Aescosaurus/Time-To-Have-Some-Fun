@@ -173,8 +173,11 @@ function TraderManager( gfx,equips )
 			
 			let amIHidden = false;
 			
-			Menu.prototype.rocks = gfx.LoadImage( "Images/MenuItems/Rock.png" );
-			Menu.prototype.grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
+			// Menu.prototype.rocks = gfx.LoadImage( "Images/MenuItems/Rock.png" );
+			// Menu.prototype.grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
+			
+			rocks = gfx.LoadImage( "Images/MenuItems/Rock.png" );
+			grass = gfx.LoadImage( "Images/MenuItems/Grass.png" );
 			// 
 			this.Update=( kbd,ms,selectRect,pResources,menuIsOpen )=>
 			{
